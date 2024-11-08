@@ -1,0 +1,14 @@
+{
+  "name": "watteria/vending_machine",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "watte",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+  }
+}

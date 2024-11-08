@@ -1,0 +1,5 @@
+get_health_check:
+  controller: App\SharedKernel\UI\Controller\HealthCheckController
+  methods: [GET]
+  path: /health-check
+

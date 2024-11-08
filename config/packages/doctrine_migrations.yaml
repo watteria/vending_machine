@@ -1,0 +1,7 @@
+doctrine_migrations:
+    migrations_paths:
+        'DoctrineMigrations': '%kernel.project_dir%/config/doctrine/migrations'
+    organize_migrations: BY_YEAR_AND_MONTH
+    storage:
+        table_storage:
+            table_name: 'shared_doctrine_migrations_version'

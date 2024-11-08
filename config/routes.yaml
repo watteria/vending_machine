@@ -1,0 +1,2 @@
+shared:
+  resource: '../src/SharedKernel/Infrastructure/Symfony/routes.yaml'

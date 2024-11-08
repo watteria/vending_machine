@@ -3,6 +3,8 @@
   "description": "description",
   "minimum-stability": "stable",
   "license": "proprietary",
+  "type": "project",
+  "prefer-stable": true,
   "authors": [
     {
       "name": "watte",
@@ -10,5 +12,91 @@
     }
   ],
   "require": {
+    "php": ">=8.1",
+    "ext-ctype": "*",
+    "ext-iconv": "*",
+    "beberlei/assert": "^3.3",
+    "doctrine/doctrine-bundle": "^2.10",
+    "doctrine/doctrine-migrations-bundle": "^3.2",
+    "doctrine/orm": "^2.16",
+    "fakerphp/faker": "*",
+    "lambdish/phunctional": "^2.1",
+    "lcobucci/jwt": "^5.1",
+    "nelmio/cors-bundle": "^2.5",
+    "ramsey/uuid": "^4.7",
+    "sebastian/diff": "^4.0",
+    "symfony/amqp-messenger": "6.3.*",
+    "symfony/console": "6.3.*",
+    "symfony/dotenv": "6.3.*",
+    "symfony/flex": "^2",
+    "symfony/framework-bundle": "6.3.*",
+    "symfony/http-client": "6.3.*",
+    "symfony/messenger": "6.3.*",
+    "symfony/runtime": "6.3.*",
+    "symfony/security-bundle": "6.3.*",
+    "symfony/twig-bundle": "6.3.*",
+    "symfony/validator": "6.3.*",
+    "symfony/var-dumper": "6.3.*",
+    "symfony/yaml": "6.3.*",
+    "twig/twig": "*",
+    "ext-amqp": "*"
+  },
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": true,
+      "symfony/flex": true,
+      "symfony/runtime": true
+    },
+    "sort-packages": true
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "App\\Tests\\": "tests/"
+    }
+  },
+  "replace": {
+    "symfony/polyfill-ctype": "*",
+    "symfony/polyfill-iconv": "*",
+    "symfony/polyfill-php72": "*",
+    "symfony/polyfill-php73": "*",
+    "symfony/polyfill-php74": "*",
+    "symfony/polyfill-php80": "*",
+    "symfony/polyfill-php81": "*"
+  },
+  "scripts": {
+    "auto-scripts": {
+      "cache:clear": "symfony-cmd",
+      "assets:install %PUBLIC_DIR%": "symfony-cmd"
+    },
+    "post-install-cmd": [
+      "@auto-scripts"
+    ],
+    "post-update-cmd": [
+      "@auto-scripts"
+    ]
+  },
+  "conflict": {
+    "symfony/symfony": "*"
+  },
+  "extra": {
+    "symfony": {
+      "allow-contrib": false,
+      "require": "6.3.*"
+    }
+  },
+  "require-dev": {
+    "behat/behat": "^3.13",
+    "doctrine/doctrine-fixtures-bundle": "^3.5",
+    "friends-of-behat/symfony-extension": "^2.4",
+    "phpunit/phpunit": "^9.5",
+    "symfony/browser-kit": "6.3.*",
+    "symfony/css-selector": "6.3.*",
+    "symfony/debug-bundle": "6.3.*",
+    "symfony/phpunit-bridge": "^6.3"
   }
 }

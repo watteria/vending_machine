@@ -3,6 +3,73 @@ services:
     autowire: true
     autoconfigure: true
 
+  _instanceof:
+    App\SharedKernel\Domain\Bus\Event\DomainEventSubscriber:
+      tags: [ 'oriol.domain_event_subscriber' ]
+
+    App\SharedKernel\Domain\Bus\Command\CommandHandler:
+      tags: [ 'oriol.command_handler' ]
+
+    App\SharedKernel\Domain\Bus\Query\QueryHandler:
+      tags: [ 'oriol.query_handler' ]
 
   App\SharedKernel\:
     resource: '../src/SharedKernel/'
+
+
+
+  App\SharedKernel\Infrastructure\Bus\Event\InMemory\InMemorySymfonyEventBus:
+    arguments: [!tagged oriol.domain_event_subscriber]
+    lazy: true
+
+  App\SharedKernel\Infrastructure\Bus\Event\DomainEventMapping:
+    arguments: [ !tagged oriol.domain_event_subscriber ]
+
+  App\SharedKernel\Infrastructure\Bus\Event\DomainEventSubscriberLocator:
+    arguments: [ !tagged oriol.domain_event_subscriber ]
+
+  App\SharedKernel\Infrastructure\Symfony\AddJsonBodyToRequestListener:
+    tags:
+      - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+  App\SharedKernel\Infrastructure\Symfony\ApiExceptionListener:
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception, method: onException }
+
+  App\SharedKernel\Infrastructure\Bus\Command\InMemorySymfonyCommandBus:
+    arguments: [ !tagged oriol.command_handler ]
+
+  App\SharedKernel\Infrastructure\Bus\Query\InMemorySymfonyQueryBus:
+    arguments: [ !tagged oriol.query_handler ]
+
+  App\SharedKernel\UI\Command\ConfigureRabbitMqCommand:
+    arguments:
+      $exchangeName: '%env(RABBITMQ_EXCHANGE)%'
+      $subscribers: !tagged_iterator 'oriol.domain_event_subscriber'
+
+  # RabbitMQ
+  App\SharedKernel\Infrastructure\Bus\Event\RabbitMq\RabbitMqConnection:
+    arguments:
+      - host: '%env(RABBITMQ_HOST)%'
+        port: '%env(RABBITMQ_PORT)%'
+        vhost: '%env(RABBITMQ_VIRTUAL_VHOST)%'
+        login: '%env(RABBITMQ_LOGIN)%'
+        password: '%env(RABBITMQ_PASSWORD)%'
+        read_timeout: 2
+        write_timeout: 2
+        connect_timeout: 5
+
+  App\SharedKernel\Infrastructure\Bus\Event\RabbitMq\RabbitMqEventBus:
+    arguments:
+      - '@App\SharedKernel\Infrastructure\Bus\Event\RabbitMq\RabbitMqConnection'
+      - '%env(RABBITMQ_EXCHANGE)%'
+
+  App\SharedKernel\Infrastructure\Bus\Event\RabbitMq\RabbitMqDomainEventsConsumer:
+    arguments:
+      - '@App\SharedKernel\Infrastructure\Bus\Event\RabbitMq\RabbitMqConnection'
+      - '@App\SharedKernel\Infrastructure\Bus\Event\DomainEventJsonDeserializer'
+      - '%env(RABBITMQ_EXCHANGE)%'
+      - '%env(RABBITMQ_MAX_RETRIES)%'
+
+
+  App\SharedKernel\Domain\Bus\Event\EventBus: '@App\SharedKernel\Infrastructure\Bus\Event\RabbitMq\RabbitMqEventBus'

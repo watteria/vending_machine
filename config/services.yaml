@@ -20,6 +20,10 @@ services:
     resource: '../src/Context/Items/Item/'
 
 
+  App\Context\Coins\Coin\:
+    resource: '../src/Context/Coins/Coin/'
+
+
   App\SharedKernel\Infrastructure\Bus\Event\InMemory\InMemorySymfonyEventBus:
     arguments: [!tagged oriol.domain_event_subscriber]
     lazy: true

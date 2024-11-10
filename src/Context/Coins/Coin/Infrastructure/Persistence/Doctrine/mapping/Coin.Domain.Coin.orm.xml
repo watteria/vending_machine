@@ -1,0 +1,8 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping">
+    <entity name="App\Context\Coins\Coin\Domain\Coin" table="coins">
+        <id name="coin_id" type="string" length="36" column="coin_id" />
+        <field name="quantity" type="integer" length="50" column="quantity" />
+        <field name="coin_value" type="float" length="250" column="coin_value" />
+        <field name="valid_for_change" type="integer" length="50" column="valid_for_change" />
+    </entity>
+</doctrine-mapping>

@@ -3,3 +3,7 @@ shared:
 
 items:
   resource: '../src/Context/Items/Item/Infrastructure/Symfony/routes.yaml'
+
+
+coins:
+  resource: '../src/Context/Coins/Coin/Infrastructure/Symfony/routes.yaml'

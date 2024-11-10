@@ -1,0 +1,20 @@
+
+view_coins:
+  path: /api/coins
+  controller: App\Context\Coins\Coin\UI\Controller\AllCoinsController::index
+  methods: [GET]
+
+avaiable_coins:
+  path: /api/coins/avaiable_change
+  controller: App\Context\Coins\Coin\UI\Controller\AvaiableChangeCoinsController
+  methods: [GET]
+
+all_amount_coins:
+  path: /api/coins/total
+  controller: App\Context\Coins\Coin\UI\Controller\TotalAmountController
+  methods: [GET]
+
+update_coin:
+  path: /api/coins/{coin_id}
+  controller: App\Context\Coins\Coin\UI\Controller\UpdateCoinController
+  methods: [POST,PATCH, POST]

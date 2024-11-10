@@ -15,8 +15,8 @@ use function Lambdish\Phunctional\each;
 final  class RabbitMqEventBus implements EventBus
 {
 	public function __construct(
-		private RabbitMqConnection $connection,
-		private string $exchangeName
+		private readonly RabbitMqConnection $connection,
+		private readonly string $exchangeName
 	) {}
 
 	public function publish(DomainEvent ...$events): void

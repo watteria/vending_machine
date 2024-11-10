@@ -4,3 +4,9 @@ doctrine:
     orm:
         auto_generate_proxy_classes: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        mappings:
+            Items:
+                type: xml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Context/Items/Item/Infrastructure/Persistence/Doctrine/mapping'
+                prefix: 'App\Context\Items'

@@ -16,6 +16,8 @@ services:
   App\SharedKernel\:
     resource: '../src/SharedKernel/'
 
+  App\Context\Items\Item\:
+    resource: '../src/Context/Items/Item/'
 
 
   App\SharedKernel\Infrastructure\Bus\Event\InMemory\InMemorySymfonyEventBus:

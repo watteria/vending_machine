@@ -1,2 +1,5 @@
 shared:
   resource: '../src/SharedKernel/Infrastructure/Symfony/routes.yaml'
+
+items:
+  resource: '../src/Context/Items/Item/Infrastructure/Symfony/routes.yaml'

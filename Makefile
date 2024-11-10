@@ -83,8 +83,31 @@ container-names: ## Change default container names (need param name)
 	find . -type f -exec sed -i 's/ddd-skeleton/$(name)/g' {} +
 
 
+reset-symfony-test-cache: ## Clear testing cache
+	docker exec --user ${UID} -it ${DOCKER_BE} bin/console cache:clear --env=test
+
+recreate-db: ## Recreate database
+	docker exec --user ${UID} -it ${DOCKER_BE} bin/console d:sc:drop -n -q -f --full-database
+	docker exec --user ${UID} -it ${DOCKER_BE} bin/console d:mi:mi -n
+
+
+load-db-fixtures: ## Load fixtures
+	docker exec --user ${UID} -it ${DOCKER_BE} bin/console d:f:load -n
+
+
+test-unit: ## Execute unit tests
+	docker exec --user ${UID} -it ${DOCKER_BE} bin/phpunit
+
+
+test-acceptance-behat: ## Execute behat tests
+	make reset-symfony-test-cache
+	make load-db-fixtures
+	docker exec --user ${UID} -it ${DOCKER_BE} vendor/bin/behat
+
+
 init: ## Init tot de cop
 	$(MAKE) down
 	$(MAKE) build
 	$(MAKE) up
 	$(MAKE) composer-install
+	$(MAKE) recreate-db

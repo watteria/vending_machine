@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>API Tester</title>
+</head>
+<body>
+<h1>Probar API</h1>
+
+<form id="apiForm" method="POST">
+    <div>
+        <label for="url">URL</label>
+        <input type="text" id="url" name="url" required>
+    </div>
+
+    <div>
+        <label for="method">Método HTTP</label>
+        <select id="method" name="method" required>
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="DELETE">DELETE</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="params">Parámetros (JSON)</label>
+        <textarea id="params" name="params" rows="10" cols="50" required></textarea>
+    </div>
+
+    <button type="button" onclick="submitApiForm()">Enviar</button>
+</form>
+
+<div id="result"></div>
+
+<script>
+    function jsonToFormData(json, formData = new FormData(), parentKey = '') {
+        for (let key in json) {
+            if (json.hasOwnProperty(key)) {
+                const keyName = parentKey ? `${parentKey}[${key}]` : key;
+
+                if (typeof json[key] === 'object' && !Array.isArray(json[key])) {
+                    jsonToFormData(json[key], formData, keyName);
+                } else if (Array.isArray(json[key])) {
+                    json[key].forEach((item, index) => {
+                        if (typeof item === 'object') {
+                            jsonToFormData(item, formData, `${keyName}[${index}]`);
+                        } else {
+                            formData.append(`${keyName}[${index}]`, item);
+                        }
+                    });
+                } else {
+                    formData.append(keyName, json[key]);
+                }
+            }
+        }
+        return formData;
+    }
+
+    async function submitApiForm() {
+        const url = document.getElementById('url').value;
+        const method = document.getElementById('method').value;
+        const jsonParams = document.getElementById('params').value;
+
+        try {
+            var parsedParams="";
+            var formData="";
+            var response="";
+            if(jsonParams!==""){
+                parsedParams = JSON.parse(jsonParams);
+                formData = jsonToFormData(parsedParams);
+            }
+            if(method==="GET" || method==="DELETE"){
+                response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+            }else{
+                response = await fetch(url, {
+                    method: method,
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+            }
+
+
+            const result = await response.json();
+
+            document.getElementById('result').innerText = JSON.stringify(result, null, 2);
+        } catch (error) {
+            document.getElementById('result').innerText = 'Error: ' + error.message;
+        }
+    }
+</script>
+</body>
+</html>

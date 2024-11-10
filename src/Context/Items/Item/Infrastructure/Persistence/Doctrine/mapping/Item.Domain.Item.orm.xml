@@ -1,0 +1,8 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping">
+    <entity name="App\Context\Items\Item\Domain\Item" table="items">
+        <id name="item_id" type="string" length="36" column="item_id" />
+        <field name="product_name" length="250" column="product_name" />
+        <field name="quantity" type="integer" length="50" column="quantity" />
+        <field name="price" type="float" length="250" column="price" />
+    </entity>
+</doctrine-mapping>

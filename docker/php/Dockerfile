@@ -21,8 +21,10 @@ RUN apt-get update \
 RUN curl --insecure https://getcomposer.org/composer.phar -o /usr/bin/composer && chmod +x /usr/bin/composer
 RUN composer self-update
 
-RUN mkdir -p /appdata/www
+RUN mkdir -p /appdata/www && chown -R appuser:appuser /appdata/www
+
 
 USER appuser
+RUN git config --global --add safe.directory /appdata/www
 
 WORKDIR /appdata/www

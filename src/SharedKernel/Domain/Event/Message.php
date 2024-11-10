@@ -6,7 +6,7 @@ abstract class Message
 {
     private const MESSAGE_COMPANY_NAME = 'watteria';
 
-    public function __construct(private array $payload = [], private array $metadata = [])
+    public function __construct(private readonly  array $payload = [], private readonly  array $metadata = [])
     {
     }
 

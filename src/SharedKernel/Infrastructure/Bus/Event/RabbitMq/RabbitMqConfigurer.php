@@ -11,7 +11,7 @@ use function Lambdish\Phunctional\each;
 
 final  class RabbitMqConfigurer
 {
-	public function __construct(private RabbitMqConnection $connection) {}
+	public function __construct(private readonly RabbitMqConnection $connection) {}
 
 	public function configure(string $exchangeName, DomainEventSubscriber ...$subscribers): void
 	{

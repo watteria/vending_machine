@@ -3,3 +3,7 @@ get_health_check:
   methods: [GET]
   path: /health-check
 
+api_test:
+  controller: App\SharedKernel\UI\Controller\WatteriaCheckAPIController::testApi
+  methods: [POST,GET,PUT,DELETE]
+  path: /api/check-api

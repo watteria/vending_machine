@@ -1,0 +1,25 @@
+
+view_items:
+  path: /api/items
+  controller: App\Context\Items\Item\UI\Controller\AllItemsController::index
+  methods: [GET]
+
+avaiable_items:
+  path: /api/items/avaiable_items
+  controller: App\Context\Items\Item\UI\Controller\AvaiableItemsController
+  methods: [GET]
+
+create_item:
+  path: /api/items
+  controller: App\Context\Items\Item\UI\Controller\CreateItemsController
+  methods: [POST]
+
+update_item:
+  path: /api/items/{item_id}
+  controller: App\Context\Items\Item\UI\Controller\UpdateItemController
+  methods: [ POST]
+
+delete_item:
+  path: /api/items/{item_id}
+  controller: App\Context\Items\Item\UI\Controller\DeleteItemController
+  methods: [DELETE]

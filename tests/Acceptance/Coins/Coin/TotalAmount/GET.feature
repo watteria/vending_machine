@@ -7,22 +7,28 @@ Feature: Total Amount Calculation
       """
       [
         {
-          "coin_id": "123e",
+          "coin_id": "3991b21f-3d6f-43bd-899c-a53bc5d2da13",
           "valid_for_change": 1,
-          "quantity": 10,
-          "coin_value": 0.65
+          "quantity": 20,
+          "coin_value": 0.25
         },
         {
-          "coin_id": "456f",
+          "coin_id": "3a990a45-bd5c-41a7-82e8-c9b21a581220",
           "valid_for_change": 1,
-          "quantity": 5,
-          "coin_value": 1.25
+          "quantity": 20,
+          "coin_value": 0.05
         },
         {
-          "coin_id": "789g",
+          "coin_id": "e25b1559-1fca-4e5b-b6be-c4e761a13064",
           "valid_for_change": 0,
-          "quantity": 3,
-          "coin_value": 2.00
+          "quantity": 12,
+          "coin_value": 1
+        },
+        {
+          "coin_id": "e48b2473-8562-432e-8305-4293be72056d",
+          "valid_for_change": 1,
+          "quantity": 20,
+          "coin_value": 0.1
         }
       ]
       """
@@ -32,6 +38,6 @@ Feature: Total Amount Calculation
     And the response JSON should be equal to:
     """
       {
-        "total": "18.75"
+        "total": "20"
       }
       """

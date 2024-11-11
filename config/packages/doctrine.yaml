@@ -1,6 +1,8 @@
 doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
+        logging: true
+
     orm:
         auto_generate_proxy_classes: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
@@ -15,3 +17,8 @@ doctrine:
                 is_bundle: false
                 dir: '%kernel.project_dir%/src/Context/Coins/Coin/Infrastructure/Persistence/Doctrine/mapping'
                 prefix: 'App\Context\Coins'
+            Customers:
+                type: xml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Context/Customers/Customer/Infrastructure/Persistence/Doctrine/mapping'
+                prefix: 'App\Context\Customers'

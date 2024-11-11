@@ -1,0 +1,8 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping">
+    <entity name="App\Context\Customers\Customer\Domain\Customer" table="customers">
+        <id name="customer_id" type="string" length="36" column="customer_id" />
+        <field name="id_product"  length="250" column="id_product" />
+        <field name="inserted_money" length="250" column="inserted_money" />
+        <field name="status" length="50" column="status" />
+    </entity>
+</doctrine-mapping>

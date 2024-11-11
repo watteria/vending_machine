@@ -7,3 +7,6 @@ items:
 
 coins:
   resource: '../src/Context/Coins/Coin/Infrastructure/Symfony/routes.yaml'
+
+customers:
+  resource: '../src/Context/Customers/Customer/Infrastructure/Symfony/routes.yaml'

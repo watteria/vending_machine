@@ -2,16 +2,21 @@
 
 namespace App\Tests\Acceptance\SharedKernel;
 
+use App\Context\Coins\Coin\Domain\Coin;
 use App\Context\Items\Item\Domain\Item;
+use App\Context\Customers\Customer\Domain\Customer;
+use App\Tests\Unit\Coins\Coin\Domain\CoinMother;
 use App\Tests\Unit\Items\Item\Domain\ItemMother;
 use Assert\Assertion;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Doctrine\Common\DataFixtures\Loader;
+use App\Tests\Unit\SharedKernel\Domain\Mothers\UuidMother;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManagerInterface;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use PHPUnit\Framework\Assert;
 use SebastianBergmann\Diff\Differ;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -40,6 +45,23 @@ final class SharedContext implements Context
 
         $this->client->setServerParameter('CONTENT_TYPE', 'application/json');
         $this->client->setServerParameter('HTTP_ACCEPT', 'application/json');
+    }
+
+
+    /**
+     * Purga la base de datos al inicio de cada escenario.
+     * @BeforeScenario
+     */
+    public function resetDatabase(BeforeScenarioScope $scope)
+    {
+        $this->purgeDatabase();
+    }
+
+
+    private function purgeDatabase()
+    {
+        $purger = new ORMPurger($this->entityManager);
+        $purger->purge();
     }
 
     /**
@@ -82,7 +104,6 @@ final class SharedContext implements Context
             $data['quantity'],
             $data['price']
         );
-
         $this->entityManager->persist($item);
         $this->entityManager->flush();
     }
@@ -95,15 +116,13 @@ final class SharedContext implements Context
     {
         $loader = new Loader();
 
-        // Define la cantidad de ítems que quieres crear
-        $numberOfItems = 5; // Cambia este número a la cantidad deseada
 
+        $numberOfItems = 5;
         for ($i = 0; $i < $numberOfItems; $i++) {
-            $item = ItemMother::create(); // Crea un ítem aleatorio usando ItemMother
+            $item = ItemMother::create();
             $this->entityManager->persist($item);
         }
 
-        // Guarda los ítems generados en la base de datos
         $this->entityManager->flush();
     }
 
@@ -118,7 +137,71 @@ final class SharedContext implements Context
         $this->response = $this->client->getResponse();
     }
 
+    /**
+     * @Given the database contains this coins:
+     */
+    public function theDatabaseContainsThisCoins(string $json)
+    {
+        $data = json_decode($json, true);
+        if ($data === null) {
+            throw new \InvalidArgumentException("Invalid JSON provided");
+        }
+        foreach ($data as $data_item) {
+            $coin = new Coin(
+                $data_item['coin_id'],
+                $data_item['quantity'],
+                $data_item['coin_value'],
+                $data_item['valid_for_change']
+            );
 
+            $this->entityManager->persist($coin);
+        }
+
+
+        $this->entityManager->flush();
+    }
+
+
+    /**
+     * @Given the database contains multiple coins
+     */
+    public function theDatabaseContainsMultipleCoins()
+    {
+        $loader = new Loader();
+
+        $numberOfCoins = 5; //
+        for ($i = 0; $i < $numberOfCoins; $i++) {
+            $item = CoinMother::create();
+            $this->entityManager->persist($item);
+        }
+
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @Given the database contains this customer:
+     */
+    public function theDatabaseContainsThisCustomer(string $json)
+    {
+        $data = json_decode($json, true);
+        if ($data === null) {
+            throw new \InvalidArgumentException("Invalid JSON provided");
+        }
+        if(!isset($data['customer_id'])){
+            $data['customer_id']=UuidMother::create();
+        }
+        $customer = new Customer(
+            $data['customer_id'],
+            $data['id_product'],
+            json_encode($data['inserted_money']),
+            $data['status'],
+            json_encode($data['remaining_machine_coins'])
+        );
+
+        $this->entityManager->persist($customer);
+        $this->entityManager->flush();
+
+    }
 
     /**
      * @When I send a GET request to :arg1 with query parameters in JSON:
@@ -187,7 +270,9 @@ final class SharedContext implements Context
                     return; // Pass if at least one error contains the expected message
                 }
             }
-        } else {
+        }  elseif (isset($responseData['status'])) {
+            Assert::assertStringContainsString($message, $responseData['status']);
+        }else {
             throw new \Exception('Neither message nor errors found in the response->');
         }
     }
@@ -275,4 +360,36 @@ final class SharedContext implements Context
         $actualData = $this->getDecodedResponse();
         Assert::assertEquals($expectedData, $actualData, "The response JSON does not match the expected JSON");
     }
+    /**
+     * @Then the response body should contain one of the following status:
+     */
+    public function theResponseBodyShouldContainOneOfTheFollowingStatus(PyStringNode $jsonMessages)
+    {
+        $expectedMessagesData = json_decode($jsonMessages->getRaw(), true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \InvalidArgumentException("Invalid JSON provided in the feature file: " . json_last_error_msg());
+        }
+
+        if (!isset($expectedMessagesData['status']) || !is_array($expectedMessagesData['status'])) {
+            throw new \InvalidArgumentException("The JSON should contain an array under the 'status' key.");
+        }
+
+        $responseData = $this->getDecodedResponse();
+
+
+        if (isset($responseData[0]['status'])) {
+            Assert::assertTrue(
+                in_array($responseData[0]['status'], $expectedMessagesData['status'], true),
+                sprintf(
+                    "Expected one of the status values: %s, but got: %s",
+                    implode(', ', $expectedMessagesData['status']),
+                    $responseData[0]['status']
+                )
+            );
+        } else {
+            throw new \Exception('The response does not contain a status.');
+        }
+    }
+
 }

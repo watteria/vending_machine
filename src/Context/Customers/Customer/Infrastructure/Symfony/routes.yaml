@@ -1,0 +1,44 @@
+
+view_customer:
+  path: /api/customers/{customer_id}
+  controller: App\Context\Customers\Customer\UI\Controller\GetCustomerController
+  methods: [GET]
+
+view_customer_inserted_money:
+  path: /api/customers/inserted_money/{customer_id}
+  controller: App\Context\Customers\Customer\UI\Controller\InsertedMoneyCustomerController
+  methods: [GET]
+
+create_customer:
+  path: /api/customers
+  controller: App\Context\Customers\Customer\UI\Controller\CreateCustomerController
+  methods: [POST]
+
+checkout_customer_with_no_token:
+  path: /api/customers/checkout/
+  controller: App\Context\Customers\Customer\UI\Controller\CheckoutCustomerController
+  methods: [ POST ]
+
+checkout_customer:
+  path: /api/customers/checkout/{customer_id}
+  controller: App\Context\Customers\Customer\UI\Controller\CheckoutCustomerController
+  methods: [ POST ]
+
+
+update_customer:
+  path: /api/customers/{customer_id}
+  controller: App\Context\Customers\Customer\UI\Controller\UpdateCustomerController
+  methods: [PUT,PATCH, POST]
+
+
+reset_customer_with_no_token:
+  path: /api/customers/reset/
+  controller: App\Context\Customers\Customer\UI\Controller\ResetCustomerController
+  methods: [ POST ]
+
+reset_customer:
+  path: /api/customers/reset/{customer_id}
+  controller: App\Context\Customers\Customer\UI\Controller\ResetCustomerController
+  methods: [ POST ]
+
+

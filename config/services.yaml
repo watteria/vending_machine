@@ -23,6 +23,9 @@ services:
   App\Context\Coins\Coin\:
     resource: '../src/Context/Coins/Coin/'
 
+  App\Context\Customers\Customer\:
+    resource: '../src/Context/Customers/Customer/'
+
 
   App\SharedKernel\Infrastructure\Bus\Event\InMemory\InMemorySymfonyEventBus:
     arguments: [!tagged oriol.domain_event_subscriber]

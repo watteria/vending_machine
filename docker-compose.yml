@@ -59,7 +59,7 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: password
       MYSQL_ROOT_PASSWORD: root
-    command: mysqld --sql_mode="STRICT_ALL_TABLES,NO_ENGINE_SUBSTITUTION"
+    command: mysqld --sql_mode="STRICT_ALL_TABLES,NO_ENGINE_SUBSTITUTION"  --bind-address=0.0.0.0
     volumes:
       - ddd-skeleton-db-data:/var/lib/mysql
     networks:

@@ -284,15 +284,16 @@ function App() {
             )}
             {mostrarFormularioCompra && (
                 <>
-
-                <div className="text-center mt-4">
-                  <button className="btn btn-success me-2" onClick={handleCustomerSubmit} disabled={loading}>
-                    Request product
-                  </button>
-                  <button className="btn btn-secondary" onClick={handleReset} disabled={loading}>
-                    Refund money
-                  </button>
-                </div>
+                  {!accesoPermitido && (
+                    <div className="text-center mt-4">
+                      <button className="btn btn-success me-2" onClick={handleCustomerSubmit} disabled={loading}>
+                        Request product
+                      </button>
+                      <button className="btn btn-secondary" onClick={handleReset} disabled={loading}>
+                        Refund money
+                      </button>
+                    </div>
+                  )}
 
                 {mostrarFormulario && !accesoPermitido && (
                   <div className="mb-4">

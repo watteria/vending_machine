@@ -25,7 +25,6 @@ class GetCustomerController extends AbstractController
         $change=MoneyChangeOnLimitedCoins::calculateChange($machineCoins,0,0);
 
         $customer['remaining_machine_coins']=$change['coins_on_machine'];
-        $customer['inserted_money']=json_decode($customer['inserted_money']);
 
         return new JsonResponse($customer);
     }

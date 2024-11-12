@@ -3,20 +3,31 @@
 namespace App\Tests\Acceptance\SharedKernel;
 
 use App\Context\Coins\Coin\Domain\Coin;
-use App\Context\Items\Item\Domain\Item;
+use App\Context\Coins\Coin\Domain\ValueObject\CoinId;
+use App\Context\Coins\Coin\Domain\ValueObject\CoinQuantity;
+use App\Context\Coins\Coin\Domain\ValueObject\CoinValidForChange;
+use App\Context\Coins\Coin\Domain\ValueObject\CoinValue;
 use App\Context\Customers\Customer\Domain\Customer;
+use App\Context\Customers\Customer\Domain\ValueObject\CustomerId;
+use App\Context\Customers\Customer\Domain\ValueObject\CustomerInsertedMoney;
+use App\Context\Customers\Customer\Domain\ValueObject\CustomerStatus;
+use App\Context\Items\Item\Domain\Item;
+use App\Context\Items\Item\Domain\ValueObject\ItemId;
+use App\Context\Items\Item\Domain\ValueObject\ItemPrice;
+use App\Context\Items\Item\Domain\ValueObject\ItemProductName;
+use App\Context\Items\Item\Domain\ValueObject\ItemQuantity;
 use App\Tests\Unit\Coins\Coin\Domain\CoinMother;
 use App\Tests\Unit\Items\Item\Domain\ItemMother;
+use App\Tests\Unit\SharedKernel\Domain\Mothers\UuidMother;
 use Assert\Assertion;
 use Behat\Behat\Context\Context;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Doctrine\Common\DataFixtures\Loader;
-use App\Tests\Unit\SharedKernel\Domain\Mothers\UuidMother;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManagerInterface;
-use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use PHPUnit\Framework\Assert;
 use SebastianBergmann\Diff\Differ;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -48,21 +59,7 @@ final class SharedContext implements Context
     }
 
 
-    /**
-     * Purga la base de datos al inicio de cada escenario.
-     * @BeforeScenario
-     */
-    public function resetDatabase(BeforeScenarioScope $scope)
-    {
-        $this->purgeDatabase();
-    }
 
-
-    private function purgeDatabase()
-    {
-        $purger = new ORMPurger($this->entityManager);
-        $purger->purge();
-    }
 
     /**
      * Helper method to decode JSON response
@@ -97,12 +94,12 @@ final class SharedContext implements Context
         if ($data === null) {
             throw new \InvalidArgumentException("Invalid JSON provided");
         }
-
+        $this->entityManager->createQuery('DELETE FROM App\Context\Items\Item\Domain\Item')->execute();
         $item = new Item(
-            $data['item_id'],
-            $data['product_name'],
-            $data['quantity'],
-            $data['price']
+            new ItemId($data['item_id']),
+            new ItemProductName($data['product_name']),
+            new ItemQuantity($data['quantity']),
+            new ItemPrice($data['price'])
         );
         $this->entityManager->persist($item);
         $this->entityManager->flush();
@@ -116,7 +113,7 @@ final class SharedContext implements Context
     {
         $loader = new Loader();
 
-
+        $this->entityManager->createQuery('DELETE FROM App\Context\Items\Item\Domain\Item')->execute();
         $numberOfItems = 5;
         for ($i = 0; $i < $numberOfItems; $i++) {
             $item = ItemMother::create();
@@ -129,15 +126,6 @@ final class SharedContext implements Context
 
 
     /**
-     * @When I send a GET request to :url
-     */
-    public function iSendAGetRequestTo($url)
-    {
-        $this->client->request('GET', $url);
-        $this->response = $this->client->getResponse();
-    }
-
-    /**
      * @Given the database contains this coins:
      */
     public function theDatabaseContainsThisCoins(string $json)
@@ -146,12 +134,15 @@ final class SharedContext implements Context
         if ($data === null) {
             throw new \InvalidArgumentException("Invalid JSON provided");
         }
+
+        $this->entityManager->createQuery('DELETE FROM App\Context\Coins\Coin\Domain\Coin')->execute();
+
         foreach ($data as $data_item) {
             $coin = new Coin(
-                $data_item['coin_id'],
-                $data_item['quantity'],
-                $data_item['coin_value'],
-                $data_item['valid_for_change']
+                new CoinId($data_item['coin_id']),
+                new CoinQuantity($data_item['quantity']),
+                new CoinValue($data_item['coin_value']),
+                new CoinValidForChange((bool)$data_item['valid_for_change'])
             );
 
             $this->entityManager->persist($coin);
@@ -168,7 +159,7 @@ final class SharedContext implements Context
     public function theDatabaseContainsMultipleCoins()
     {
         $loader = new Loader();
-
+        $this->entityManager->createQuery('DELETE FROM App\Context\Coins\Coin\Domain\Coin')->execute();
         $numberOfCoins = 5; //
         for ($i = 0; $i < $numberOfCoins; $i++) {
             $item = CoinMother::create();
@@ -187,21 +178,33 @@ final class SharedContext implements Context
         if ($data === null) {
             throw new \InvalidArgumentException("Invalid JSON provided");
         }
+        $this->entityManager->createQuery('DELETE FROM App\Context\Customers\Customer\Domain\Customer')->execute();
+
         if(!isset($data['customer_id'])){
             $data['customer_id']=UuidMother::create();
         }
         $customer = new Customer(
-            $data['customer_id'],
-            $data['id_product'],
-            json_encode($data['inserted_money']),
-            $data['status'],
-            json_encode($data['remaining_machine_coins'])
+            new CustomerId($data['customer_id']),
+            new ItemId($data['id_product']),
+            new CustomerInsertedMoney($data['inserted_money']),
+            new CustomerStatus($data['status']),
+            $data['remaining_machine_coins']
         );
 
         $this->entityManager->persist($customer);
         $this->entityManager->flush();
 
     }
+
+    /**
+     * @When I send a GET request to :url
+     */
+    public function iSendAGetRequestTo($url)
+    {
+        $this->client->request('GET', $url);
+        $this->response = $this->client->getResponse();
+    }
+
 
     /**
      * @When I send a GET request to :arg1 with query parameters in JSON:
@@ -293,6 +296,64 @@ final class SharedContext implements Context
     }
 
     /**
+     * @Then the response body should contain one of the following status:
+     */
+    public function theResponseBodyShouldContainOneOfTheFollowingStatus(PyStringNode $jsonMessages)
+    {
+        $expectedMessagesData = json_decode($jsonMessages->getRaw(), true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \InvalidArgumentException("Invalid JSON provided in the feature file: " . json_last_error_msg());
+        }
+
+        if (!isset($expectedMessagesData['status']) || !is_array($expectedMessagesData['status'])) {
+            throw new \InvalidArgumentException("The JSON should contain an array under the 'status' key.");
+        }
+
+        $responseData = $this->getDecodedResponse();
+
+        if (isset($responseData['status'])) {
+            Assert::assertTrue(
+                in_array($responseData['status'], $expectedMessagesData['status'], true),
+                sprintf(
+                    "Expected one of the status values: %s, but got: %s",
+                    implode(', ', $expectedMessagesData['status']),
+                    $responseData['status']
+                )
+            );
+        } else {
+            throw new \Exception('The response does not contain a status.');
+        }
+    }
+
+    /**
+     * @Then the response JSON should contain exactly:
+     */
+
+    public function theResponseJsonShouldContainExactly(string $expectedJson)
+    {
+        $expected = json_decode($expectedJson, true);
+        $actual = json_decode($this->response->getContent(), true);
+
+        if (count($expected) !== count($actual)) {
+            throw new \Exception("The response JSON does not match the expected JSON exactly.");
+        }
+
+        foreach ($expected as $expectedItem) {
+            if (!in_array($expectedItem, $actual, true)) {
+                throw new \Exception("The response JSON does not contain the expected items.");
+            }
+        }
+
+        foreach ($actual as $actualItem) {
+            if (!in_array($actualItem, $expected, true)) {
+                throw new \Exception("The response JSON contains extra items not expected.");
+            }
+        }
+    }
+
+
+    /**
      * @Then each :arg1 in the response should contain the fields:
      */
     public function eachItemInTheResponseShouldContainFields($arg1, PyStringNode $fieldsJson)
@@ -359,37 +420,6 @@ final class SharedContext implements Context
 
         $actualData = $this->getDecodedResponse();
         Assert::assertEquals($expectedData, $actualData, "The response JSON does not match the expected JSON");
-    }
-    /**
-     * @Then the response body should contain one of the following status:
-     */
-    public function theResponseBodyShouldContainOneOfTheFollowingStatus(PyStringNode $jsonMessages)
-    {
-        $expectedMessagesData = json_decode($jsonMessages->getRaw(), true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \InvalidArgumentException("Invalid JSON provided in the feature file: " . json_last_error_msg());
-        }
-
-        if (!isset($expectedMessagesData['status']) || !is_array($expectedMessagesData['status'])) {
-            throw new \InvalidArgumentException("The JSON should contain an array under the 'status' key.");
-        }
-
-        $responseData = $this->getDecodedResponse();
-
-
-        if (isset($responseData[0]['status'])) {
-            Assert::assertTrue(
-                in_array($responseData[0]['status'], $expectedMessagesData['status'], true),
-                sprintf(
-                    "Expected one of the status values: %s, but got: %s",
-                    implode(', ', $expectedMessagesData['status']),
-                    $responseData[0]['status']
-                )
-            );
-        } else {
-            throw new \Exception('The response does not contain a status.');
-        }
     }
 
 }

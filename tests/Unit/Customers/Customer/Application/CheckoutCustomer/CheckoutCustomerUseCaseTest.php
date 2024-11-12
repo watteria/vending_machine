@@ -7,6 +7,10 @@ use App\Context\Customers\Customer\Application\CreateCustomer\CreateCustomerUseC
 use App\Context\Customers\Customer\Domain\Event\CustomerWasCheckout;
 use App\Context\Customers\Customer\Domain\Repository\CustomerRepository;
 use App\Context\Customers\Customer\Domain\Customer;
+use App\Context\Customers\Customer\Domain\ValueObject\CustomerId;
+use App\Context\Customers\Customer\Domain\ValueObject\CustomerInsertedMoney;
+use App\Context\Customers\Customer\Domain\ValueObject\CustomerStatus;
+use App\Context\Items\Item\Domain\ValueObject\ItemId;
 use App\SharedKernel\Domain\Bus\Event\EventBus;
 use App\Tests\Unit\Coins\Coin\Domain\CoinMother;
 use App\Tests\Unit\Items\Item\Domain\ItemMother;
@@ -21,11 +25,11 @@ class CheckoutCustomerUseCaseTest extends TestCase
         $repository = $this->createMock(CustomerRepository::class);
         $eventBus = $this->createMock(EventBus::class);
 
-        $customerId = UuidMother::create();
-        $idProduct = json_encode(ItemMother::create());
-        $insertedMoney = json_encode(CoinMother::createArray(3));
-        $status = 'PROCESSING';
-        $remainingMachineCoins = IntMother::create(2);
+        $customerId = CustomerId::random();
+        $idProduct = ItemId::random();
+        $insertedMoney = CustomerInsertedMoney::randomCoins(3);
+        $status = new CustomerStatus('IN_PROCESS');
+        $remainingMachineCoins = CoinMother::createArray(3);
 
         $checkoutCustomer = Customer::checkout($customerId, $idProduct, $insertedMoney, $status, $remainingMachineCoins);
 
@@ -33,8 +37,8 @@ class CheckoutCustomerUseCaseTest extends TestCase
             ->expects(self::once())
             ->method('save')
             ->with($this->callback(function (Customer $savedCustomer) use ($checkoutCustomer) {
-                return $checkoutCustomer->id() === $checkoutCustomer->id() &&
-                    $checkoutCustomer->status() === $checkoutCustomer->status() &&
+                return $checkoutCustomer->id()->value() === $checkoutCustomer->id()->value() &&
+                    $checkoutCustomer->status()->value() === $checkoutCustomer->status()->value() &&
                     $checkoutCustomer->inserted_money() === $checkoutCustomer->inserted_money();
             }));
 
@@ -43,11 +47,11 @@ class CheckoutCustomerUseCaseTest extends TestCase
             ->method('publish')
             ->with($this->callback(function ($event) use ($checkoutCustomer) {
                 return $event instanceof CustomerWasCheckout &&
-                    $event->aggregateId() === $checkoutCustomer->id() &&
-                    $event->customer_id() === $checkoutCustomer->id() &&
-                    $event->id_product() === $checkoutCustomer->id_product() &&
-                    $event->inserted_money() === $checkoutCustomer->inserted_money() &&
-                    $event->status()=== $checkoutCustomer->status() &&
+                    $event->aggregateId() === $checkoutCustomer->id()->value() &&
+                    $event->customer_id()->value() === $checkoutCustomer->id()->value() &&
+                    $event->id_product()->value() === $checkoutCustomer->id_product()->value() &&
+                    $event->inserted_money()->value() === $checkoutCustomer->inserted_money()->value() &&
+                    $event->status()->value() === $checkoutCustomer->status()->value() &&
                     $event->remaining_machine_coins() === $checkoutCustomer->remaining_machine_coins();
             }));
 

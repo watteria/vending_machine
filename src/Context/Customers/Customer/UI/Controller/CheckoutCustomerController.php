@@ -6,7 +6,11 @@ use App\Context\Coins\Coin\Application\AllCoins\AllCoinsQuery;
 use App\Context\Coins\Coin\Domain\Tools\MoneyChangeOnLimitedCoins;
 use App\Context\Coins\Coin\Domain\Tools\MoneyCounterFromJson;
 use App\Context\Customers\Customer\Application\CheckoutCustomer\CheckoutCustomerCommand;
+use App\Context\Customers\Customer\Domain\ValueObject\CustomerId;
+use App\Context\Customers\Customer\Domain\ValueObject\CustomerInsertedMoney;
+use App\Context\Customers\Customer\Domain\ValueObject\CustomerStatus;
 use App\Context\Items\Item\Application\GetItem\GetItemQuery;
+use App\Context\Items\Item\Domain\ValueObject\ItemId;
 use App\SharedKernel\Domain\Bus\Command\CommandBus;
 use App\SharedKernel\Domain\Bus\Query\QueryBus;
 use Ramsey\Uuid\Uuid;
@@ -35,7 +39,7 @@ class CheckoutCustomerController extends AbstractController
             $jsonData= $request->request->all();
         }
 
-        $json_inserted_money=json_encode($jsonData['inserted_money']);
+
 
 
         if(isset($jsonData['id_product']) && $jsonData['id_product']!=="" ){
@@ -67,7 +71,7 @@ class CheckoutCustomerController extends AbstractController
                                     return new JsonResponse(['message' => "ERROR: The machine not have enought money for the change"],Response::HTTP_OK);
                                 }
 
-                                $this->commandBus->dispatch(new CheckoutCustomerCommand($customer_id,$jsonData['id_product'] , $json_inserted_money, 'COMPLETED',json_encode($change['coins_on_machine'])));
+                                $this->commandBus->dispatch(new CheckoutCustomerCommand(new CustomerId($customer_id),new ItemId($jsonData['id_product']) , new CustomerInsertedMoney($jsonData['inserted_money']), new CustomerStatus('COMPLETED'),$change['coins_on_machine']));
 
 
                                 return new JsonResponse( $change,Response::HTTP_OK);

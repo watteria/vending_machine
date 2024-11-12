@@ -6,10 +6,10 @@ use App\Context\Coins\Coin\Domain\Coin;
 use App\Context\Coins\Coin\Domain\Repository\CoinRepository;
 use App\Context\Coins\Coin\Application\UpdateCoin\UpdateCoinUseCase;
 use App\Context\Coins\Coin\Domain\Event\CoinWasUpdated;
+use App\Context\Coins\Coin\Domain\ValueObject\CoinQuantity;
+use App\Context\Coins\Coin\Domain\ValueObject\CoinValue;
 use App\SharedKernel\Domain\Bus\Event\EventBus;
 use App\Tests\Unit\Coins\Coin\Domain\CoinMother;
-use App\Tests\Unit\SharedKernel\Domain\Mothers\FloatMother;
-use App\Tests\Unit\SharedKernel\Domain\Mothers\IntMother;
 use App\Tests\Unit\SharedKernel\UnitTestCase;
 
 class UpdateCoinUseCaseTest extends UnitTestCase
@@ -20,16 +20,16 @@ class UpdateCoinUseCaseTest extends UnitTestCase
         $eventBus = $this->createMock(EventBus::class);
 
         $coin = CoinMother::default();
-        $price_value = FloatMother::create();
-        $quantity_value = IntMother::create();
+        $price_value =  CoinValue::random(2);
+        $quantity_value = CoinQuantity::random(0,10);
         $updatedCoin = new Coin($coin->id(), $quantity_value, $price_value, $coin->valid_for_change());
 
         $repository
             ->expects(self::once())
             ->method('save')
             ->with($this->callback(function (Coin $savedCoin) use ($price_value, $quantity_value) {
-                return $savedCoin->coin_value() === $price_value &&
-                    $savedCoin->quantity() === $quantity_value;
+                return $savedCoin->coin_value()->value() === $price_value->value() &&
+                    $savedCoin->quantity()->value() === $quantity_value->value();
             }));
 
         $eventBus
@@ -37,11 +37,11 @@ class UpdateCoinUseCaseTest extends UnitTestCase
             ->method('publish')
             ->with($this->callback(function ($event) use ($updatedCoin) {
                 return $event instanceof CoinWasUpdated &&
-                    $event->aggregateId() === $updatedCoin->id() &&
-                    $event->coin_id() === $updatedCoin->coin_id() &&
-                    $event->quantity() === $updatedCoin->quantity() &&
-                    $event->coin_value() === $updatedCoin->coin_value() &&
-                    $event->valid_for_change() === $updatedCoin->valid_for_change();
+                    $event->aggregateId() === $updatedCoin->id()->value() &&
+                    $event->coin_id()->value() === $updatedCoin->coin_id()->value() &&
+                    $event->quantity()->value() === $updatedCoin->quantity()->value() &&
+                    $event->coin_value()->value() === $updatedCoin->coin_value()->value() &&
+                    $event->valid_for_change()->value() === $updatedCoin->valid_for_change()->value();
             }));
 
         $useCase = new UpdateCoinUseCase($repository, $eventBus);
@@ -50,11 +50,11 @@ class UpdateCoinUseCaseTest extends UnitTestCase
         $repository
             ->expects(self::once())
             ->method('search')
-            ->with($coin->coin_id())
+            ->with($coin->coin_id()->value())
             ->willReturn($updatedCoin);
 
-        $foundCoin = $repository->search($coin->coin_id());
-        $this->assertEquals($price_value, $foundCoin->coin_value());
+        $foundCoin = $repository->search($coin->coin_id()->value());
+        $this->assertEquals($price_value->value(), $foundCoin->coin_value()->value());
     }
 
 }

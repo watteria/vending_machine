@@ -6,6 +6,10 @@ use App\Context\Customers\Customer\Application\UpdateCustomer\UpdateCustomerUseC
 use App\Context\Customers\Customer\Domain\Event\CustomerWasUpdated;
 use App\Context\Customers\Customer\Domain\Repository\CustomerRepository;
 use App\Context\Customers\Customer\Domain\Customer;
+use App\Context\Customers\Customer\Domain\ValueObject\CustomerId;
+use App\Context\Customers\Customer\Domain\ValueObject\CustomerInsertedMoney;
+use App\Context\Customers\Customer\Domain\ValueObject\CustomerStatus;
+use App\Context\Items\Item\Domain\ValueObject\ItemId;
 use App\SharedKernel\Domain\Bus\Event\EventBus;
 use App\Tests\Unit\Coins\Coin\Domain\CoinMother;
 use App\Tests\Unit\Items\Item\Domain\ItemMother;
@@ -20,11 +24,11 @@ class UpdateCustomerUseCaseTest extends TestCase
         $repository = $this->createMock(CustomerRepository::class);
         $eventBus = $this->createMock(EventBus::class);
 
-        $customerId = UuidMother::create();
-        $idProduct = json_encode(ItemMother::create());
-        $insertedMoney = json_encode(CoinMother::createArray(3));
-        $status = 'PROCESSING';
-        $remainingMachineCoins = IntMother::create(2);
+        $customerId = CustomerId::random();
+        $idProduct = ItemId::random();
+        $insertedMoney = CustomerInsertedMoney::randomCoins(3);
+        $status = new CustomerStatus('IN_PROCESS');
+        $remainingMachineCoins =  CoinMother::createArray(3);
 
         $updatedCustomer = Customer::update($customerId, $idProduct, $insertedMoney, $status, $remainingMachineCoins);
 
@@ -32,9 +36,9 @@ class UpdateCustomerUseCaseTest extends TestCase
             ->expects(self::once())
             ->method('save')
             ->with($this->callback(function (Customer $savedCustomer) use ($updatedCustomer) {
-                return $savedCustomer->id() === $updatedCustomer->id() &&
-                    $savedCustomer->status() === $updatedCustomer->status() &&
-                    $savedCustomer->inserted_money() === $updatedCustomer->inserted_money();
+                return $savedCustomer->id()->value() === $updatedCustomer->id()->value() &&
+                    $savedCustomer->status()->value() === $updatedCustomer->status()->value() &&
+                    $savedCustomer->inserted_money()->value() === $updatedCustomer->inserted_money()->value();
             }));
 
         $eventBus
@@ -42,11 +46,11 @@ class UpdateCustomerUseCaseTest extends TestCase
             ->method('publish')
             ->with($this->callback(function ($event) use ($updatedCustomer) {
                 return $event instanceof CustomerWasUpdated &&
-                    $event->aggregateId() === $updatedCustomer->id() &&
-                    $event->customer_id() === $updatedCustomer->id() &&
-                    $event->id_product() === $updatedCustomer->id_product() &&
-                    $event->inserted_money() === $updatedCustomer->inserted_money() &&
-                    $event->status()=== $updatedCustomer->status() &&
+                    $event->aggregateId() === $updatedCustomer->id()->value() &&
+                    $event->customer_id()->value() === $updatedCustomer->id()->value() &&
+                    $event->id_product()->value() === $updatedCustomer->id_product()->value() &&
+                    $event->inserted_money()->value() === $updatedCustomer->inserted_money()->value() &&
+                    $event->status()->value() === $updatedCustomer->status()->value() &&
                     $event->remaining_machine_coins() === $updatedCustomer->remaining_machine_coins();
             }));
 

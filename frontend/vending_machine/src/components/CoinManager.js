@@ -49,7 +49,7 @@ function CoinManager({ coins, setCoins, setMensaje, accesoPermitido, totalMoneda
         const url = `http://localhost:1000/api/coins/${coin.coin_id}`;
         const coinToSave = {
             ...coin,
-            valid_for_change: coin.valid_for_change ? 1 : 0
+            valid_for_change: Boolean(coin.valid_for_change)
         };
         try {
             const response = await axios.post(url, coinToSave);

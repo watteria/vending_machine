@@ -5,39 +5,43 @@ namespace App\Context\Items\Item\Domain;
 use App\Context\Items\Item\Domain\Event\ItemWasCreated;
 use App\Context\Items\Item\Domain\Event\ItemWasDeleted;
 use App\Context\Items\Item\Domain\Event\ItemWasUpdated;
+use App\Context\Items\Item\Domain\ValueObject\ItemId;
+use App\Context\Items\Item\Domain\ValueObject\ItemPrice;
+use App\Context\Items\Item\Domain\ValueObject\ItemProductName;
+use App\Context\Items\Item\Domain\ValueObject\ItemQuantity;
 use App\SharedKernel\Domain\Aggregate\AggregateRoot;
 
 class Item extends AggregateRoot
 {
-    public function __construct(private readonly string $item_id, private readonly string $product_name, private readonly int $quantity, private readonly float $price)
+    public function __construct(private readonly ItemId $item_id, private readonly ItemProductName $product_name, private readonly ItemQuantity $quantity, private readonly ItemPrice $price)
     {
     }
 
-    public function id(): string
+    public function id(): ItemId
     {
         return $this->item_id;
     }
-    public function item_id(): string
+    public function item_id(): ItemId
     {
         return $this->item_id;
     }
 
-    public function product_name(): string
+    public function product_name(): ItemProductName
     {
         return $this->product_name;
     }
 
-    public function quantity(): int
+    public function quantity(): ItemQuantity
     {
         return $this->quantity;
     }
-    public function price(): float
+    public function price(): ItemPrice
     {
         return $this->price;
     }
 
 
-    public static function create(string $id, string $product_name,int $quantity,float $price): self
+    public static function create(ItemId $id, ItemProductName $product_name,ItemQuantity $quantity,ItemPrice $price): self
     {
         $item = new self($id, $product_name,$quantity,$price);
 
@@ -52,7 +56,7 @@ class Item extends AggregateRoot
         return $item;
     }
 
-    public static function update(string $id, string $product_name,int $quantity,float $price): self
+    public static function update(ItemId $id, ItemProductName $product_name,ItemQuantity $quantity,ItemPrice $price): self
     {
         $item = new self($id, $product_name,$quantity,$price);
 
@@ -67,7 +71,7 @@ class Item extends AggregateRoot
         return $item;
     }
 
-    public static function delete(string $id, string $product_name,int $quantity,float $price): self
+    public static function delete(ItemId $id, ItemProductName $product_name,ItemQuantity $quantity,ItemPrice $price): self
     {
         $item = new self($id, $product_name,$quantity,$price);
 

@@ -15,10 +15,10 @@ class AllItemsResponse implements Response
         $result_final=array();
         foreach ($this->items as $item){
             $result_final[]=[
-                'item_id' => $item->item_id(),
-                'product_name' => $item->product_name(),
-                'quantity' => $item->quantity(),
-                'price' => $item->price()
+                'item_id' => $item->item_id()->value(),
+                'product_name' => $item->product_name()->value(),
+                'quantity' => $item->quantity()->value(),
+                'price' => $item->price()->value()
             ];
         }
         return $result_final;

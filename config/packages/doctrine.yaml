@@ -1,7 +1,18 @@
 doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
-        logging: true
+        types:
+            item_id: App\Context\Items\Item\Infrastructure\Persistence\Doctrine\mapping\ItemIdType
+            item_price: App\Context\Items\Item\Infrastructure\Persistence\Doctrine\mapping\ItemPriceType
+            item_productname: App\Context\Items\Item\Infrastructure\Persistence\Doctrine\mapping\ItemProductNameType
+            item_quantity: App\Context\Items\Item\Infrastructure\Persistence\Doctrine\mapping\ItemQuantityType
+            coin_id: App\Context\Coins\Coin\Infrastructure\Persistence\Doctrine\mapping\CoinIdType
+            coin_quantity: App\Context\Coins\Coin\Infrastructure\Persistence\Doctrine\mapping\CoinQuantityType
+            coin_valid_for_change: App\Context\Coins\Coin\Infrastructure\Persistence\Doctrine\mapping\CoinValidForChangeType
+            coin_value: App\Context\Coins\Coin\Infrastructure\Persistence\Doctrine\mapping\CoinValueType
+            customer_id: App\Context\Customers\Customer\Infrastructure\Persistence\Doctrine\mapping\CustomerIdType
+            customer_status: App\Context\Customers\Customer\Infrastructure\Persistence\Doctrine\mapping\CustomerStatusType
+            customer_inserted_money: App\Context\Customers\Customer\Infrastructure\Persistence\Doctrine\mapping\CustomerInsertedMoneyType
 
     orm:
         auto_generate_proxy_classes: true

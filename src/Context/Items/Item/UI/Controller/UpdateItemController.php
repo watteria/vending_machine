@@ -3,6 +3,10 @@
 namespace App\Context\Items\Item\UI\Controller;
 
 use App\Context\Items\Item\Application\UpdateItem\UpdateItemCommand;
+use App\Context\Items\Item\Domain\ValueObject\ItemId;
+use App\Context\Items\Item\Domain\ValueObject\ItemPrice;
+use App\Context\Items\Item\Domain\ValueObject\ItemProductName;
+use App\Context\Items\Item\Domain\ValueObject\ItemQuantity;
 use App\SharedKernel\Domain\Bus\Command\CommandBus;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -39,8 +43,8 @@ class UpdateItemController extends AbstractController
             ], Response::HTTP_OK);
         }else{
 
-            $this->commandBus->dispatch(new UpdateItemCommand($jsonData['item_id'], $jsonData['product_name'],
-                $jsonData['quantity'], $jsonData['price']));
+            $this->commandBus->dispatch(new UpdateItemCommand(new ItemId($jsonData['item_id']), new ItemProductName($jsonData['product_name']),
+                new ItemQuantity($jsonData['quantity']), new ItemPrice($jsonData['price'])));
 
             return new JsonResponse(['message' => "Item updated"], Response::HTTP_CREATED);
         }

@@ -7,8 +7,5 @@ use App\Context\Customers\Event\CustomersCommand;
 class ResetCustomerCommand extends CustomersCommand
 {
 
-    protected function messageName(): string
-    {
-        return 'customer.customer_reset';
-    }
+
 }

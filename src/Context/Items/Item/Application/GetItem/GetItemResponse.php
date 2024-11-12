@@ -15,10 +15,10 @@ class GetItemResponse implements Response
     {
 
         $result_final=[
-            'item_id' => $this->item->item_id(),
-            'product_name' => $this->item->product_name(),
-            'quantity' => $this->item->quantity(),
-            'price' => $this->item->price()
+            'item_id' => $this->item->item_id()->value(),
+            'product_name' => $this->item->product_name()->value(),
+            'quantity' => $this->item->quantity()->value(),
+            'price' => $this->item->price()->value()
         ];
         return $result_final;
     }

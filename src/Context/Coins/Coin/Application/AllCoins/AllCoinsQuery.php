@@ -14,8 +14,4 @@ class AllCoinsQuery extends CoinsQuery
     }
 
 
-    protected function messageName(): string
-    {
-        return 'coins.get_all';
-    }
 }

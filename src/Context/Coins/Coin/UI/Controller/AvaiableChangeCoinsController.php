@@ -20,7 +20,7 @@ class AvaiableChangeCoinsController extends AbstractController
         $coins=$response->result();
 
         $coinsForChange = array_filter($coins, function($coin) {
-            return $coin['valid_for_change'] === 1;
+            return $coin['valid_for_change'] === true;
         });
 
         $coinsForChange = array_values($coinsForChange);

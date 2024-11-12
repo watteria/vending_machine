@@ -8,6 +8,7 @@
 /frontend/vending_machine/node_modules/
 /vendor/
 .idea
+behat_windows_oriol.yaml
 ###< symfony/framework-bundle ###
 ###> symfony/phpunit-bridge ###
 .phpunit.result.cache

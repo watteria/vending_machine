@@ -6,43 +6,47 @@ use App\Context\Customers\Customer\Domain\Event\CustomerWasCheckout;
 use App\Context\Customers\Customer\Domain\Event\CustomerWasCreated;
 use App\Context\Customers\Customer\Domain\Event\CustomerWasReset;
 use App\Context\Customers\Customer\Domain\Event\CustomerWasUpdated;
+use App\Context\Customers\Customer\Domain\ValueObject\CustomerId;
+use App\Context\Customers\Customer\Domain\ValueObject\CustomerInsertedMoney;
+use App\Context\Customers\Customer\Domain\ValueObject\CustomerStatus;
+use App\Context\Items\Item\Domain\ValueObject\ItemId;
 use App\SharedKernel\Domain\Aggregate\AggregateRoot;
 
 class Customer extends AggregateRoot
 {
-    public function __construct(private readonly string $customer_id, private readonly string $id_product, private readonly string $inserted_money, private readonly string $status, private readonly string $remaining_machine_coins)
+    public function __construct(private readonly CustomerId $customer_id, private readonly ItemId $id_product, private readonly CustomerInsertedMoney $inserted_money, private readonly CustomerStatus $status, private readonly array $remaining_machine_coins)
     {
     }
-    public function id(): string
+    public function id(): CustomerId
     {
         return $this->customer_id;
     }
-    public function customer_id(): string
+    public function customer_id(): CustomerId
     {
         return $this->customer_id;
     }
 
-    public function id_product(): string
+    public function id_product(): ItemId
     {
         return $this->id_product;
     }
 
-    public function inserted_money(): string
+    public function inserted_money(): CustomerInsertedMoney
     {
         return $this->inserted_money;
     }
-    public function remaining_machine_coins(): string
+    public function remaining_machine_coins(): array
     {
         return $this->remaining_machine_coins;
     }
 
-    public function status(): string
+    public function status(): CustomerStatus
     {
         return $this->status;
     }
 
 
-    public static function create(string $customer_id, string $id_product,string $inserted_money,string $status,string $remaining_machine_coins): self
+    public static function create(CustomerId $customer_id, ItemId $id_product,CustomerInsertedMoney $inserted_money,CustomerStatus $status,array $remaining_machine_coins): self
     {
         $customer = new self($customer_id, $id_product,$inserted_money,$status,$remaining_machine_coins);
 
@@ -58,7 +62,7 @@ class Customer extends AggregateRoot
         return $customer;
     }
 
-    public static function update(string $customer_id, string $id_product,string $inserted_money,string $status,string $remaining_machine_coins): self
+    public static function update(CustomerId $customer_id, ItemId $id_product,CustomerInsertedMoney $inserted_money,CustomerStatus $status,array $remaining_machine_coins): self
     {
 
         $customer = new self($customer_id, $id_product,$inserted_money,$status,$remaining_machine_coins);
@@ -76,7 +80,7 @@ class Customer extends AggregateRoot
     }
 
 
-    public static function checkout(string $customer_id, string $id_product,string $inserted_money,string $status,string $remaining_machine_coins): self
+    public static function checkout(CustomerId $customer_id, ItemId $id_product,CustomerInsertedMoney $inserted_money,CustomerStatus $status,array $remaining_machine_coins): self
     {
 
         $customer = new self($customer_id, $id_product,$inserted_money,$status,$remaining_machine_coins);
@@ -94,7 +98,7 @@ class Customer extends AggregateRoot
     }
 
 
-    public static function reset(string $customer_id, string $id_product,string $inserted_money,string $status,string $remaining_machine_coins): self
+    public static function reset(CustomerId $customer_id, ItemId $id_product,CustomerInsertedMoney $inserted_money,CustomerStatus $status,array $remaining_machine_coins): self
     {
 
         $customer = new self($customer_id, $id_product,$inserted_money,$status,$remaining_machine_coins);

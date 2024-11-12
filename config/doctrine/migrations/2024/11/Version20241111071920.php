@@ -21,6 +21,6 @@ final class Version20241111071920 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->addSql('DROP TABLE customers');
+
     }
 }

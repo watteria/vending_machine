@@ -96,10 +96,13 @@ load-db-fixtures: ## Load fixtures
 
 
 test-unit: ## Execute unit tests
+	$(MAKE) recreate-db
 	docker exec --user ${UID} -it ${DOCKER_BE} bin/phpunit
+	$(MAKE) recreate-db
 
 
 test-acceptance-behat: ## Execute behat tests
+	$(MAKE) recreate-db
 	make reset-symfony-test-cache
 	make load-db-fixtures
 	docker exec --user ${UID} -it ${DOCKER_BE} vendor/bin/behat

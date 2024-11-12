@@ -2,36 +2,40 @@
 
 namespace App\Context\Coins\Event;
 
+use App\Context\Coins\Coin\Domain\ValueObject\CoinId;
+use App\Context\Coins\Coin\Domain\ValueObject\CoinQuantity;
+use App\Context\Coins\Coin\Domain\ValueObject\CoinValidForChange;
+use App\Context\Coins\Coin\Domain\ValueObject\CoinValue;
 use App\SharedKernel\Domain\Bus\Command\Command;
 
 abstract class CoinsCommand implements Command
 {
 
 
-    public function __construct(private readonly string $coin_id,  private readonly int $quantity, private readonly float $coin_value, private readonly int $valid_for_change)
+    public function __construct(private readonly CoinId $coin_id,  private readonly CoinQuantity $quantity, private readonly CoinValue $coin_value, private readonly CoinValidForChange $valid_for_change)
     {
     }
 
-    public function id(): string
-    {
-        return $this->coin_id;
-    }
-    public function coin_id(): string
+    public function id(): CoinId
     {
         return $this->coin_id;
     }
+    public function coin_id(): CoinId
+    {
+        return $this->coin_id;
+    }
 
 
-    public function quantity(): int
+    public function quantity(): CoinQuantity
     {
         return $this->quantity;
     }
-    public function coin_value(): float
+    public function coin_value(): CoinValue
     {
         return $this->coin_value;
     }
 
-    public function valid_for_change(): int
+    public function valid_for_change(): CoinValidForChange
     {
         return $this->valid_for_change;
     }

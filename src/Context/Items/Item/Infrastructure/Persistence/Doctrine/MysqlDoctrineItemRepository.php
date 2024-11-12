@@ -4,6 +4,10 @@ namespace App\Context\Items\Item\Infrastructure\Persistence\Doctrine;
 
 use App\Context\Items\Item\Domain\Repository\ItemRepository;
 use App\Context\Items\Item\Domain\Item;
+use App\Context\Items\Item\Domain\ValueObject\ItemId;
+use App\Context\Items\Item\Domain\ValueObject\ItemPrice;
+use App\Context\Items\Item\Domain\ValueObject\ItemProductName;
+use App\Context\Items\Item\Domain\ValueObject\ItemQuantity;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DoctrineRepository;
 use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -26,14 +30,12 @@ class MysqlDoctrineItemRepository extends DoctrineRepository implements ItemRepo
         $query = $this->getNativeQuery($sql);
 
         $respuesta=$query->getArrayResult();
-        if(isset($respuesta[0]['item_id'])){
-            $item= new Item($respuesta[0]['item_id'],$respuesta[0]['product_name'],$respuesta[0]['quantity'],$respuesta[0]['price']);
-
-
-            return $item;
-        }else{
-            return null;
+        foreach ($respuesta as $item) {
+            return new Item($item['item_id'],$item['product_name'],$item['quantity'],$item['price']);
         }
+
+            return null;
+
 
 
     }
@@ -45,9 +47,12 @@ class MysqlDoctrineItemRepository extends DoctrineRepository implements ItemRepo
             $where
         SQL;
 
+        $respuesta=array();
         $query = $this->getNativeQuery($sql);
-
-        $respuesta=$query->getResult();
+        $query_response=$query->getArrayResult();
+        foreach($query_response as $item){
+            $respuesta[]= new Item($item['item_id'],$item['product_name'],$item['quantity'],$item['price']);
+        }
         return $respuesta;
     }
 
@@ -67,10 +72,10 @@ class MysqlDoctrineItemRepository extends DoctrineRepository implements ItemRepo
         $this->entityManager->getConnection()->executeStatement(
             $sql,
             [
-                'item_id' => $item->item_id(),
-                'product_name' => $item->product_name(),
-                'quantity' => $item->quantity(),
-                'price' => $item->price(),
+                'item_id' => $item->item_id()->value(),
+                'product_name' => $item->product_name()->value(),
+                'quantity' => $item->quantity()->value(),
+                'price' => $item->price()->value(),
             ]
         );
     }

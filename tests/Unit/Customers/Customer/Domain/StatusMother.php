@@ -6,7 +6,7 @@ namespace App\Tests\Unit\Customers\Customer\Domain;
 class StatusMother
 {
     private const STATUSES = [
-        'PROCESSING',
+        'IN_PROCESS',
         'COMPLETED',
         'CANCELLED'
     ];

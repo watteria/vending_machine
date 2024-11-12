@@ -2,13 +2,12 @@
 
 namespace App\Context\Customers\Customer\Infrastructure\Persistence\Doctrine;
 
-use App\Context\Coins\Coin\Application\AllCoins\AllCoinsQuery;
-use App\Context\Coins\Coin\Domain\Tools\MoneyChangeOnLimitedCoins;
 use App\Context\Customers\Customer\Domain\Repository\CustomerRepository;
 use App\Context\Customers\Customer\Domain\Customer;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DoctrineRepository;
 use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query\ResultSetMapping;
+use App\SharedKernel\Domain\Utils;
 
 class MysqlDoctrineCustomerRepository extends DoctrineRepository implements CustomerRepository
 {
@@ -28,12 +27,11 @@ class MysqlDoctrineCustomerRepository extends DoctrineRepository implements Cust
         $query = $this->getNativeQuery($sql);
 
         $respuesta=$query->getArrayResult();
-        if(isset($respuesta[0]['customer_id'])){
-            $customer= new Customer($respuesta[0]['customer_id'],$respuesta[0]['id_product'],$respuesta[0]['inserted_money'],$respuesta[0]['status'],"");
-            return $customer;
-        }else{
-            return null;
+        foreach ($respuesta as $customer) {
+
+            return new Customer($customer['customer_id'],$customer['id_product'],$customer['inserted_money'],$customer['status'],array());
         }
+        return null;
 
     }
     public function searchAll(): array
@@ -46,7 +44,12 @@ class MysqlDoctrineCustomerRepository extends DoctrineRepository implements Cust
 
         $query = $this->getNativeQuery($sql);
 
-        $respuesta=$query->getResult();
+        $respuesta=array();
+        $query = $this->getNativeQuery($sql);
+        $query_response=$query->getArrayResult();
+        foreach($query_response as $customer){
+            $respuesta[]= new Customer($customer['customer_id'],$customer['id_product'],$customer['inserted_money'],$customer['status'],array());
+        }
         return $respuesta;
     }
 
@@ -66,10 +69,10 @@ class MysqlDoctrineCustomerRepository extends DoctrineRepository implements Cust
         $this->entityManager->getConnection()->executeStatement(
             $sql,
             [
-                'customer_id' => $customer->customer_id(),
-                'id_product' => $customer->id_product(),
-                'inserted_money' => $customer->inserted_money(),
-                'status' => $customer->status(),
+                'customer_id' => $customer->customer_id()->value(),
+                'id_product' => $customer->id_product()->value(),
+                'inserted_money' => $customer->inserted_money()->value(),
+                'status' => $customer->status()->value(),
             ]
         );
     }

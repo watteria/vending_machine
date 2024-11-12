@@ -23,7 +23,7 @@ class DeleteItemUseCaseTest extends UnitTestCase
             ->expects(self::once())
             ->method('delete')
             ->with($this->callback(function (Item $deletedItem) use ($item) {
-                return $deletedItem->item_id() === $item->item_id();
+                return $deletedItem->item_id()->value() === $item->item_id()->value();
             }));
 
 
@@ -34,11 +34,11 @@ class DeleteItemUseCaseTest extends UnitTestCase
         $repository
             ->expects(self::once())
             ->method('search')
-            ->with($item->item_id())
+            ->with($item->item_id()->value())
             ->willReturn(null);
 
 
-        $deletedItem = $repository->search($item->item_id());
+        $deletedItem = $repository->search($item->item_id()->value());
         $this->assertNull($deletedItem);
     }
 }

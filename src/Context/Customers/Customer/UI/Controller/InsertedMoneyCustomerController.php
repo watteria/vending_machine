@@ -24,7 +24,7 @@ class InsertedMoneyCustomerController extends AbstractController
 
         $customer=$response->result();
 
-        return new JsonResponse(json_decode($customer['inserted_money']));
+        return new JsonResponse($customer['inserted_money']);
     }
 
 

@@ -17,9 +17,4 @@ class GetCustomerQuery extends CustomersQuery
 
 
 
-
-    protected function messageName(): string
-    {
-        return 'customer.get';
-    }
 }

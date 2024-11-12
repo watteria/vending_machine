@@ -3,6 +3,10 @@
 namespace App\Context\Coins\Coin\UI\Controller;
 
 use App\Context\Coins\Coin\Application\UpdateCoin\UpdateCoinCommand;
+use App\Context\Coins\Coin\Domain\ValueObject\CoinId;
+use App\Context\Coins\Coin\Domain\ValueObject\CoinQuantity;
+use App\Context\Coins\Coin\Domain\ValueObject\CoinValidForChange;
+use App\Context\Coins\Coin\Domain\ValueObject\CoinValue;
 use App\SharedKernel\Domain\Bus\Command\CommandBus;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -40,8 +44,13 @@ class UpdateCoinController extends AbstractController
             ], Response::HTTP_OK);
         }else{
 
-            $this->commandBus->dispatch(new UpdateCoinCommand($jsonData['coin_id'],
-                $jsonData['quantity'], $jsonData['coin_value'], $jsonData['valid_for_change']));
+            $coin_id=new CoinId($jsonData['coin_id']);
+            $quantity=new CoinQuantity($jsonData['quantity']);
+            $coin_value=new CoinValue($jsonData['coin_value']);
+            $valid_for_change=new CoinValidForChange($jsonData['valid_for_change']);
+
+            $this->commandBus->dispatch(new UpdateCoinCommand($coin_id,
+                $quantity, $coin_value, $valid_for_change));
 
             return new JsonResponse(['message' => "Coin updated"], Response::HTTP_CREATED);
         }
@@ -56,10 +65,13 @@ class UpdateCoinController extends AbstractController
                     'pattern' => "/^-?\d+$/",
                     'message' => 'ERROR: The value {{ value }} is not a valid interger.',
                 ])],
-                'valid_for_change' => [new Assert\NotBlank(),   new Assert\Regex([
-                    'pattern' => "/^-?\d+$/",
-                    'message' => 'ERROR: The value {{ value }} is not a valid boolean value.',
-                ]), new Assert\Length(['min' => 0, 'max' => 100])],
+                'valid_for_change' => [
+                    new Assert\NotNull(),
+                    new Assert\Type([
+                        'type' => 'bool',
+                        'message' => 'ERROR: The value {{ value }} is not a valid boolean value. It should be true or false.',
+                    ]),
+                ],
                 'coin_value' => [new Assert\NotBlank(),   new Assert\Regex([
                     'pattern' => "/^-?\d+(\.\d+)?$/",
                     'message' => 'ERROR: The value {{ value }} is not a valid coin value.',

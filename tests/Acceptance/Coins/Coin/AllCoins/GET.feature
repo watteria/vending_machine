@@ -9,8 +9,8 @@ Feature: Get coins from the API
     """
       {
         "coin_id": "",
-        "valid_for_change": 1,
         "quantity": 0,
-        "coin_value": 0.0
+        "coin_value": 0.0,
+        "valid_for_change": true
       }
     """

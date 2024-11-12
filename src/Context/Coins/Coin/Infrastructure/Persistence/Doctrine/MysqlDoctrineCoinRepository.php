@@ -4,6 +4,10 @@ namespace App\Context\Coins\Coin\Infrastructure\Persistence\Doctrine;
 
 use App\Context\Coins\Coin\Domain\Repository\CoinRepository;
 use App\Context\Coins\Coin\Domain\Coin;
+use App\Context\Coins\Coin\Domain\ValueObject\CoinId;
+use App\Context\Coins\Coin\Domain\ValueObject\CoinQuantity;
+use App\Context\Coins\Coin\Domain\ValueObject\CoinValidForChange;
+use App\Context\Coins\Coin\Domain\ValueObject\CoinValue;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DoctrineRepository;
 use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -25,14 +29,10 @@ class MysqlDoctrineCoinRepository extends DoctrineRepository implements CoinRepo
         $query = $this->getNativeQuery($sql);
 
         $respuesta=$query->getArrayResult();
-        if(isset($respuesta[0]['coin_id'])){
-            $coin= new Coin($respuesta[0]['coin_id'],$respuesta[0]['quantity'],$respuesta[0]['coin_value'],$respuesta[0]['valid_for_change']);
-            return $coin;
-        }else{
-            return null;
+        foreach ($respuesta as $coin) {
+            return new Coin($coin['coin_id'],$coin['quantity'],$coin['coin_value'],$coin['valid_for_change']);
         }
-
-
+        return null;
 
     }
     public function searchAll(): array
@@ -43,9 +43,13 @@ class MysqlDoctrineCoinRepository extends DoctrineRepository implements CoinRepo
             $where
         SQL;
 
+        $respuesta=array();
         $query = $this->getNativeQuery($sql);
 
-        $respuesta=$query->getResult();
+        $query_response=$query->getArrayResult();
+        foreach($query_response as $coin){
+            $respuesta[]= new Coin($coin['coin_id'],$coin['quantity'],$coin['coin_value'],$coin['valid_for_change']);
+        }
         return $respuesta;
     }
 
@@ -65,10 +69,10 @@ class MysqlDoctrineCoinRepository extends DoctrineRepository implements CoinRepo
         $this->entityManager->getConnection()->executeStatement(
             $sql,
             [
-                'coin_id' => $coin->coin_id(),
-                'quantity' => $coin->quantity(),
-                'coin_value' => $coin->coin_value(),
-                'valid_for_change' => $coin->valid_for_change()
+                'coin_id' => $coin->coin_id()->value(),
+                'quantity' => $coin->quantity()->value(),
+                'coin_value' => $coin->coin_value()->value(),
+                'valid_for_change' => (int)$coin->valid_for_change()->value()
             ]
         );
     }
@@ -83,7 +87,7 @@ class MysqlDoctrineCoinRepository extends DoctrineRepository implements CoinRepo
         $this->entityManager->getConnection()->executeStatement(
             $sql,
             [
-                'coin_id' => $coin->coin_id()
+                'coin_id' => $coin->coin_id()->value()
             ]
         );
     }

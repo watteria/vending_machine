@@ -18,11 +18,11 @@ class GetItemUseCaseTest extends UnitTestCase
         $repository
             ->expects(self::once())
             ->method('search')
-            ->with($itemId)
+            ->with($itemId->value())
             ->willReturn($item);
 
         $useCase = new GetItemUseCase($repository);
-        $result = $useCase->__invoke($itemId);
+        $result = $useCase->__invoke($itemId->value());
 
         $this->assertEquals($item, $result, 'The retrieved item should match the expected item.');
     }

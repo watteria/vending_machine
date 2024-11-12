@@ -23,10 +23,10 @@ class CreateItemUseCaseTest extends UnitTestCase
             ->expects(self::once())
             ->method('save')
             ->with($this->callback(function (Item $savedItem) use ($expectedItem) {
-                return $savedItem->item_id() === $expectedItem->item_id() &&
-                    $savedItem->product_name() === $expectedItem->product_name() &&
-                    $savedItem->quantity() === $expectedItem->quantity() &&
-                    $savedItem->price() === $expectedItem->price();
+                return $savedItem->item_id()->value() === $expectedItem->item_id()->value() &&
+                    $savedItem->product_name()->value() === $expectedItem->product_name()->value() &&
+                    $savedItem->quantity()->value() === $expectedItem->quantity()->value() &&
+                    $savedItem->price()->value() === $expectedItem->price()->value();
             }));
 
         $eventBus
@@ -34,11 +34,11 @@ class CreateItemUseCaseTest extends UnitTestCase
             ->method('publish')
             ->with($this->callback(function ($event) use ($expectedItem) {
                 return $event instanceof ItemWasCreated &&
-                    $event->aggregateId() === $expectedItem->id() &&
-                    $event->item_id() === $expectedItem->item_id() &&
-                    $event->product_name() === $expectedItem->product_name() &&
-                    $event->quantity() === $expectedItem->quantity() &&
-                    $event->price() === $expectedItem->price();
+                    $event->aggregateId() === $expectedItem->id()->value() &&
+                    $event->item_id()->value() === $expectedItem->item_id()->value() &&
+                    $event->product_name()->value() === $expectedItem->product_name()->value() &&
+                    $event->quantity()->value() === $expectedItem->quantity()->value() &&
+                    $event->price()->value() === $expectedItem->price()->value();
             }));
 
         $useCase = new CreateItemUseCase($repository, $eventBus);

@@ -10,8 +10,9 @@ Este repositorio contiene la prueba que me ha pedido anna y Julio de una máquin
 
 
 ### 🖳 Contenido:
-- Contenedor NGINX 1.19 para manejar solicitudes HTTP.
+- Contenedor NGINX 1.19 para el back.
 - Contenedor PHP 8.2 para alojar la aplicación Symfony.
+- Contenedor NGINX 1.19 para el front en REACT.
 - Contenedor MySQL 8.0 para almacenar las bases de datos.
 - Contenedor RabbitMQ 3 para gestionar mensajes asíncronos.
 - Contenedor Supervisor para crear workers y manejar mensajes asíncronos con llamadas a command consumidor configurado en /docker/supervisor/workers.conf .
@@ -20,9 +21,9 @@ Este repositorio contiene la prueba que me ha pedido anna y Julio de una máquin
 
 ### 🖧 Links:
 - Frontend (React): http://localhost:1002/
-- Backend (Symfony): http://localhost:1001/
+- Backend (Symfony): http://localhost:1000/
 - RabbitMq ( Domain event Bus) : http://localhost:15672/ ( user: guest , pass: guest )
-  Supervisor
+
 
 ### 🛈 Instalación:
 - Ejecuta `make install` para iniciar los contenedores, instalar dependencias, crear la base datos y poner datos iniciales
@@ -98,6 +99,8 @@ Coins/
 │   │   ├── Tools/
 │   │   │   ├── MoneyChangeOnLimitedCoins.php ⬜ Servicio gestion de cambio
 │   │   │   └── MoneyCounterFromJson.php ⬜ Servicio contador de monedas
+│   │   ├── ValueObject/
+│   │   │   └── CoinId.php.... 💲Value Objects
 │   │   └── Coin.php 📦Agregate Root
 │   ├── Infrastructure/
 │   │   ├── Persistence/
@@ -106,6 +109,7 @@ Coins/
 │   │   │   │   │   └── CoinFixture.php ☑️ Fixture para test con behat
 │   │   │   │   ├── mapping/
 │   │   │   │   │   └── Coin.Domain.Coin.orm.xml ⬜ Definicion en doctrine
+│   │   │   │   │   └── CoinIdType.php.... ⬜ Definicion de type de  doctrine
 │   │   │   └── MysqlDoctrineCoinRepository.php ⬜ Repository en mysql
 │   │   ├── Symfony/
 │   │   │   └── routes.yaml 🖧 Rutas de symfony

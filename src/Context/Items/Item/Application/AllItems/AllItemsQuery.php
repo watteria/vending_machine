@@ -14,8 +14,4 @@ class AllItemsQuery extends ItemsQuery
     }
 
 
-    protected function messageName(): string
-    {
-        return 'items.get_all';
-    }
 }

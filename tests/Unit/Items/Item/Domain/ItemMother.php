@@ -3,6 +3,10 @@
 namespace App\Tests\Unit\Items\Item\Domain;
 
 use App\Context\Items\Item\Domain\Item;
+use App\Context\Items\Item\Domain\ValueObject\ItemId;
+use App\Context\Items\Item\Domain\ValueObject\ItemPrice;
+use App\Context\Items\Item\Domain\ValueObject\ItemProductName;
+use App\Context\Items\Item\Domain\ValueObject\ItemQuantity;
 use App\Tests\Unit\SharedKernel\Domain\Mothers\FloatMother;
 use App\Tests\Unit\SharedKernel\Domain\Mothers\IntMother;
 use App\Tests\Unit\SharedKernel\Domain\Mothers\StringMother;
@@ -12,16 +16,16 @@ class ItemMother
 {
 
     public static function create(
-        ?string $item_id = null,
-        ?string $product_name = null,
-        ?int $quantity = null,
-        ?float $price = null
+        ?ItemId $item_id = null,
+        ?ItemProductName $product_name = null,
+        ?ItemQuantity $quantity = null,
+        ?ItemPrice $price = null
     ): Item {
         return new Item(
-            $item_id ?? UuidMother::create(),
-            $product_name ?? StringMother::create(10),
-            $quantity ?? IntMother::create(2),
-            $price ?? FloatMother::create(2)
+            $item_id ?? ItemId::random(),
+            $product_name ?? ItemProductName::random(15),
+            $quantity ?? ItemQuantity::random(0,10),
+            $price ?? ItemPrice::random(2)
         );
     }
 

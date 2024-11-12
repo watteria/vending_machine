@@ -18,11 +18,11 @@ class GetCustomerUseCaseTest extends UnitTestCase
         $repository
             ->expects(self::once())
             ->method('search')
-            ->with($customerId)
+            ->with($customerId->value() )
             ->willReturn($customer);
 
         $useCase = new GetCustomerUseCase($repository);
-        $result = $useCase->__invoke($customerId);
+        $result = $useCase->__invoke($customerId->value() );
 
         $this->assertEquals($customer, $result, 'The retrieved customer should match the expected customer.');
     }

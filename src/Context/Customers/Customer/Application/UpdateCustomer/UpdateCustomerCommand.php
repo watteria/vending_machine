@@ -7,8 +7,4 @@ use App\Context\Customers\Event\CustomersCommand;
 class UpdateCustomerCommand extends CustomersCommand
 {
 
-    protected function messageName(): string
-    {
-        return 'customer.customer_updated';
-    }
 }

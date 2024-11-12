@@ -3,6 +3,10 @@
 namespace App\Context\Items\Item\UI\Controller;
 
 use App\Context\Items\Item\Application\CreateItem\CreateItemCommand;
+use App\Context\Items\Item\Domain\ValueObject\ItemId;
+use App\Context\Items\Item\Domain\ValueObject\ItemPrice;
+use App\Context\Items\Item\Domain\ValueObject\ItemProductName;
+use App\Context\Items\Item\Domain\ValueObject\ItemQuantity;
 use App\SharedKernel\Domain\Bus\Command\CommandBus;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -39,9 +43,9 @@ class CreateItemsController extends AbstractController
                 'request_data' =>   $jsonData
             ], Response::HTTP_OK);
         }else{
-            $item_id=Uuid::uuid4()->toString();
-            $this->commandBus->dispatch(new CreateItemCommand($item_id, $jsonData['product_name'],
-                $jsonData['quantity'], $jsonData['price']));
+            $item_id=ItemId::random();
+            $this->commandBus->dispatch(new CreateItemCommand($item_id, new ItemProductName($jsonData['product_name']),
+                new ItemQuantity($jsonData['quantity']), new ItemPrice($jsonData['price'])));
 
             return new JsonResponse(['message' => "Item created"], Response::HTTP_CREATED);
         }

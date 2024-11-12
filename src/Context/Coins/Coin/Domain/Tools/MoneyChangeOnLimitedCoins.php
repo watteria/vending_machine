@@ -66,7 +66,7 @@ class MoneyChangeOnLimitedCoins
         $validCoins = [];
 
         foreach ($machineCoins as $coin) {
-            if ($coin['valid_for_change'] == 1) {
+            if ($coin['valid_for_change'] === true) {
                 $id = $coin['coin_id'];
                 if (isset($validCoins[$id])) {
                     $validCoins[$id]['quantity'] += $coin['quantity'];
@@ -77,7 +77,7 @@ class MoneyChangeOnLimitedCoins
         }
 
         foreach ($userCoins as $coin) {
-            if ($coin['valid_for_change'] == 1) {
+            if ($coin['valid_for_change'] === true ) {
                 $id = $coin['coin_id'];
                 if (isset($validCoins[$id])) {
                     $validCoins[$id]['quantity'] += $coin['quantity'];

@@ -70,4 +70,18 @@ final class Utils
 
 		return iterator_to_array($iterable);
 	}
+
+    public static function json_decode_with_booleans($json) {
+        $data = json_decode($json, true);
+
+        array_walk_recursive($data, function (&$value) {
+            if ($value === 'true') {
+                $value = true;
+            } elseif ($value === 'false') {
+                $value = false;
+            }
+        });
+
+        return $data;
+    }
 }

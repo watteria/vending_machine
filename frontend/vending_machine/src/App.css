@@ -1,0 +1,85 @@
+/* Estilos existentes */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.product-card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+.edit-options {
+  margin-top: 10px;
+}
+
+.edit-options input {
+  margin-right: 10px;
+}
+
+.fade-out {
+  opacity: 1;
+  transition: opacity 1s ease-out;
+}
+
+.fade-out.fade {
+  opacity: 0;
+}
+
+.coin-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.coin-card {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 200px;
+}
+
+/* Nuevos estilos para dividir la pantalla */
+.app-container {
+  display: flex;
+  height: 100vh; /* Asegura que ocupe toda la pantalla */
+}
+
+.left-content {
+  width: 70%; /* 70% para la parte izquierda */
+  padding: 20px;
+  overflow-y: auto; /* Permite desplazarse si hay mucho contenido */
+}
+
+.right-content {
+  width: 30%; /* 30% para la parte derecha */
+  background-color: #f5f5f5;
+  border-left: 1px solid #ccc;
+  padding: 20px;
+  overflow-y: auto; /* Permite desplazarse si el contenido es largo */
+}
+
+.http-info, .http-data, .http-response {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+}
+.http-data pre{
+  min-height: 50vh;
+}
+pre {
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 5px;
+  max-height: 200px; /* Limita la altura del pre para evitar desbordamiento */
+  overflow-y: auto; /* Permite desplazarse si el contenido es muy grande */
+}

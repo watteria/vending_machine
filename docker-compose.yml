@@ -1,4 +1,19 @@
 services:
+  ddd-skeleton-frontend:
+    container_name: ddd-skeleton-frontend
+    build:
+      context: frontend
+      args:
+        UID: ${U_ID:-1000}
+    ports:
+      - "1002:3000"
+    volumes:
+      - ./frontend/vending_machine/:/home/apps/vending_machine/
+    depends_on:
+      - ddd-skeleton-be
+    networks:
+      - ddd-skeleton-network
+
   ddd-skeleton-backend:
     container_name: ddd-skeleton-backend
     build:
@@ -59,7 +74,7 @@ services:
     volumes:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
-      - ./docker/nginx/certs:/etc/ssl/certs  # Añadir certificados SSL al contenedor
+      - ./docker/nginx/certs:/etc/ssl/certs
     networks:
       - ddd-skeleton-network
 

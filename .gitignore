@@ -5,6 +5,7 @@
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
+/frontend/vending_machine/node_modules/
 /vendor/
 .idea
 ###< symfony/framework-bundle ###

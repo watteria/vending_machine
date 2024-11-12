@@ -28,7 +28,11 @@ class UpdateCustomerController extends AbstractController
         }
 
         $json_inserted_money=json_encode($jsonData['inserted_money']);
-        $json_id_product=$jsonData['id_product'];
+        if(isset($jsonData['id_product']) && $jsonData['id_product']!=="" ) {
+            $json_id_product = $jsonData['id_product'];
+        }else{
+            $json_id_product="";
+        }
 
         $total=MoneyCounterFromJson::calculateTotal($jsonData['inserted_money']);
 

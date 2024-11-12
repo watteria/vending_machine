@@ -30,7 +30,11 @@ class CreateCustomerController extends AbstractController
         }
 
         $json_inserted_money=json_encode($jsonData['inserted_money']);
-        $json_id_product=$jsonData['id_product'];
+        if(isset($jsonData['id_product']) && $jsonData['id_product']!=="" ) {
+            $json_id_product = $jsonData['id_product'];
+        }else{
+            $json_id_product="";
+        }
 
         $machineCoins=$this->queryBus->ask(AllCoinsQuery::create())->result();
         $change=MoneyChangeOnLimitedCoins::calculateChange($machineCoins,0,0);

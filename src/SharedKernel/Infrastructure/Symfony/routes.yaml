@@ -7,3 +7,10 @@ api_test:
   controller: App\SharedKernel\UI\Controller\WatteriaCheckAPIController::testApi
   methods: [POST,GET,PUT,DELETE]
   path: /api/check-api
+
+
+
+password_check:
+  controller: App\SharedKernel\UI\Controller\PasswordValidatorController
+  methods: [ POST ]
+  path: /api/password-verify

@@ -103,11 +103,20 @@ test-acceptance-behat: ## Execute behat tests
 	make reset-symfony-test-cache
 	make load-db-fixtures
 	docker exec --user ${UID} -it ${DOCKER_BE} vendor/bin/behat
+	$(MAKE) recreate-db
 
+npm-install: ## Ejecuta npm install en /frontend/vending_machine
+	cd frontend/vending_machine && npm install
+
+install: ## Init tot de cop
+	$(MAKE) down
+	$(MAKE) build
+	$(MAKE) up
+	$(MAKE) npm-install
+	$(MAKE) composer-install
 
 init: ## Init tot de cop
 	$(MAKE) down
 	$(MAKE) build
 	$(MAKE) up
-	$(MAKE) composer-install
 	$(MAKE) recreate-db

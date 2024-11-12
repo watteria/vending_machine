@@ -82,3 +82,6 @@ services:
 
 
   App\SharedKernel\Domain\Bus\Event\EventBus: '@App\SharedKernel\Infrastructure\Bus\Event\RabbitMq\RabbitMqEventBus'
+
+parameters:
+  app.passwpord: '%env(SUPLIER_PASSWORD)%'

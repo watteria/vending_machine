@@ -38,7 +38,7 @@ class CheckoutCustomerController extends AbstractController
         $json_inserted_money=json_encode($jsonData['inserted_money']);
 
 
-        if($jsonData['id_product']!="" ){
+        if(isset($jsonData['id_product']) && $jsonData['id_product']!=="" ){
             $Item=$this->queryBus->ask(new GetItemQuery($jsonData['id_product']));
 
             if(!isset($Item->result()['quantity'])){
@@ -70,7 +70,7 @@ class CheckoutCustomerController extends AbstractController
                                 $this->commandBus->dispatch(new CheckoutCustomerCommand($customer_id,$jsonData['id_product'] , $json_inserted_money, 'COMPLETED',json_encode($change['coins_on_machine'])));
 
 
-                                return new JsonResponse([ $change],Response::HTTP_OK);
+                                return new JsonResponse( $change,Response::HTTP_OK);
 
                             }
                         }

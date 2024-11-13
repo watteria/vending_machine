@@ -28,11 +28,7 @@ class CheckoutCustomerController extends AbstractController
     public function __invoke(Request $request): Response
     {
 
-        if(!$request->get('customer_id')){
-            $customer_id=Uuid::uuid4()->toString();
-        }else{
-            $customer_id=$request->get('customer_id');
-        }
+        $customer_id=$request->get('customer_id');
 
         $jsonData = json_decode($request->getContent(), true);
         if($jsonData === null) {

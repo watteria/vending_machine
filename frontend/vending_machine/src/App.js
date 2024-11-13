@@ -205,6 +205,10 @@ function App() {
     }
   };
 
+  const handleLogout = () => {
+    setAccesoPermitido(false);
+    setMensaje('Logged Out');
+  };
 
   // Gestion de Retornar Canvi
   const handleReset = async () => {
@@ -308,58 +312,66 @@ function App() {
                )}
 
                 {accesoPermitido ? (
-                  <>
-                    <div className="mb-4">
-                      <CreateItemForm
+                    <>
+                      <div className="text-center mt-4">
+                        <button
+                            onClick={handleLogout}
+                            className="btn btn-warning"
+                        >
+                          Logout
+                        </button>
+                      </div>
+                      <div className="mb-4">
+                        <CreateItemForm
+                            setItems={setItems}
+                            setMensaje={setMensaje}
+                            loading={loading}
+                            updateHttpRequestInfo={updateHttpRequestInfo}
+                        />
+                      </div>
+                      <CoinManager
+                          coins={coins}
+                          setCoins={setCoins}
+                          setMensaje={setMensaje}
+                          accesoPermitido={accesoPermitido}
+                          totalMonedas={totalMonedas}
+                          handleCustomerAction={handleCustomerAction}
+                          loading={loading}
+                          updateHttpRequestInfo={updateHttpRequestInfo}
+                          totalAcumulado={totalAcumulado}
+                          setTotalAcumulado={setTotalAcumulado}
+                      />
+                      <ItemList
+                          items={items}
                           setItems={setItems}
                           setMensaje={setMensaje}
                           loading={loading}
+                          setAccesoPermitido={setAccesoPermitido}
                           updateHttpRequestInfo={updateHttpRequestInfo}
                       />
-                    </div>
-                    <CoinManager
-                        coins={coins}
-                        setCoins={setCoins}
-                        setMensaje={setMensaje}
-                        accesoPermitido={accesoPermitido}
-                        totalMonedas={totalMonedas}
-                        handleCustomerAction={handleCustomerAction}
-                        loading={loading}
-                        updateHttpRequestInfo={updateHttpRequestInfo}
-                        totalAcumulado={totalAcumulado}
-                        setTotalAcumulado={setTotalAcumulado}
-                    />
-                    <ItemList
-                        items={items}
-                        setItems={setItems}
-                        setMensaje={setMensaje}
-                        loading={loading}
-                        setAccesoPermitido={setAccesoPermitido}
-                        updateHttpRequestInfo={updateHttpRequestInfo}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <ItemSelection
-                        items={items}
-                        selectedItem={selectedItem}
-                        setSelectedItem={setSelectedItem}
-                        loading={loading}
-                    />
-                    <CoinManager
-                        coins={coins}
-                        setCoins={setCoins}
-                        setMensaje={setMensaje}
-                        accesoPermitido={accesoPermitido}
-                        totalMonedas={totalMonedas}
-                        handleCustomerAction={handleCustomerAction}
-                        loading={loading}
-                        updateHttpRequestInfo={updateHttpRequestInfo}
-                        totalAcumulado={totalAcumulado}
-                        setTotalAcumulado={setTotalAcumulado}
-                    />
-                  </>
-                )}
+                    </>
+                  ) : (
+                    <>
+                      <ItemSelection
+                          items={items}
+                          selectedItem={selectedItem}
+                          setSelectedItem={setSelectedItem}
+                          loading={loading}
+                      />
+                      <CoinManager
+                          coins={coins}
+                          setCoins={setCoins}
+                          setMensaje={setMensaje}
+                          accesoPermitido={accesoPermitido}
+                          totalMonedas={totalMonedas}
+                          handleCustomerAction={handleCustomerAction}
+                          loading={loading}
+                          updateHttpRequestInfo={updateHttpRequestInfo}
+                          totalAcumulado={totalAcumulado}
+                          setTotalAcumulado={setTotalAcumulado}
+                      />
+                    </>
+                  )}
 
               </>
             )}

@@ -11,10 +11,30 @@ use App\Context\Items\Item\Domain\ValueObject\ItemProductName;
 use App\Context\Items\Item\Domain\ValueObject\ItemQuantity;
 use App\SharedKernel\Domain\Aggregate\AggregateRoot;
 
+#[ODM\Document(collection: "items")]
 class Item extends AggregateRoot
 {
-    public function __construct(private readonly ItemId $item_id, private readonly ItemProductName $product_name, private readonly ItemQuantity $quantity, private readonly ItemPrice $price)
+    #[ODM\Id(strategy: 'NONE', type: 'string')]
+    private string $_id;
+
+    #[ODM\Field(type: 'item_id')]
+    private  ItemId $item_id;
+
+    #[ODM\Field(type: 'product_name')]
+    private  ItemProductName $product_name;
+
+    #[ODM\Field(type: 'item_quantity')]
+    private  ItemQuantity $quantity;
+
+    #[ODM\Field(type: 'item_price')]
+    private  ItemPrice $price;
+    public function __construct( ItemId $item_id, ItemProductName $product_name, ItemQuantity $quantity,  ItemPrice $price)
     {
+        $this->_id = $item_id;
+        $this->item_id = $item_id;
+        $this->product_name = $product_name;
+        $this->quantity = $quantity;
+        $this->price = $price;
     }
 
     public function id(): ItemId

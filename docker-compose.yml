@@ -4,12 +4,13 @@ services:
     build:
       context: frontend
       args:
-        UID: ${U_ID:-1000}
+        UID: ${U_ID:-1002}
     ports:
       - "1002:3000"
     volumes:
       - ./frontend/vending_machine/:/home/apps/vending_machine/
     depends_on:
+      - ddd-skeleton-mongodb
       - ddd-skeleton-be
     networks:
       - ddd-skeleton-network
@@ -19,13 +20,14 @@ services:
     build:
       context: docker/nginx_backend
       args:
-        UID: ${U_ID:-1000}
+        UID: ${U_ID:-1002}
     ports:
       - "1000:80"
       - "1001:443"
     volumes:
       - ./public:/appdata/www/public
     depends_on:
+      - ddd-skeleton-mongodb
       - ddd-skeleton-be
     networks:
       - ddd-skeleton-network
@@ -35,7 +37,7 @@ services:
     build:
       context: docker/php
       args:
-        UID: ${U_ID:-1000}
+        UID: ${U_ID:-1002}
     environment:
       PHP_IDE_CONFIG: serverName=Docker
       PHP_XDEBUG_ENABLED: 1
@@ -44,24 +46,7 @@ services:
       - ./:/appdata/www
       - ./docker/php/xdebug-linux.ini:/usr/local/etc/php/conf.d/xdebug.ini
       - ~/.ssh/id_rsa:/home/appuser/.ssh/id_rsa
-    depends_on:
-      - ddd-skeleton-db
-    networks:
-      - ddd-skeleton-network
 
-  ddd-skeleton-db:
-    container_name: ddd-skeleton-db
-    image: mysql:8.0
-    ports:
-      - "3350:3306"
-    environment:
-      MYSQL_DATABASE: database
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: root
-    command: mysqld --sql_mode="STRICT_ALL_TABLES,NO_ENGINE_SUBSTITUTION"  --bind-address=0.0.0.0
-    volumes:
-      - ddd-skeleton-db-data:/var/lib/mysql
     networks:
       - ddd-skeleton-network
 
@@ -83,20 +68,42 @@ services:
     build:
       context: docker/php
       args:
-        UID: ${U_ID:-1000}
+        UID: ${U_ID:-1002}
     user: root
     command: supervisord
     volumes:
       - ./:/appdata/www
       - ./docker/supervisor/workers.conf:/etc/supervisor/conf.d/workers.conf
     depends_on:
-      - ddd-skeleton-db
+      - ddd-skeleton-mongodb
       - ddd-skeleton-rabbitmq
     networks:
       - ddd-skeleton-network
 
+  ddd-skeleton-mongodb:
+    container_name: ddd-skeleton-mongodb
+    build:
+      context: ./docker/mongodb
+      args:
+        UID: ${U_ID:-1002}
+        GID: ${G_ID:-1002}
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_DATABASE: database
+    volumes:
+      - ./docker/mongodb/mongodata:/data/db
+      - ./docker/mongodb/mongo_seeds:/mongo-seed
+      - ./docker/mongodb/init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh
+    depends_on:
+      - ddd-skeleton-be
+    networks:
+      - ddd-skeleton-network
+
 volumes:
-  ddd-skeleton-db-data:
+  ddd-skeleton-mongodb-data:
 
 networks:
   ddd-skeleton-network:

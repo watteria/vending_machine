@@ -31,7 +31,7 @@ class DeleteItemController extends AbstractController
 
         $Item=$this->queryBus->ask(new GetItemQuery($item_id));
 
-        $this->commandBus->dispatch(new DeleteItemCommand(new ItemId($Item->result()['item_id']), new ItemProductName($Item->result()['product_name']),
+        $this->commandBus->dispatch(new DeleteItemCommand(new ItemId($item_id), new ItemProductName($Item->result()['product_name']),
             new ItemQuantity($Item->result()['quantity']),new ItemPrice( $Item->result()['price'])));
         return new JsonResponse(['message' => "Item deleted"], Response::HTTP_OK);
 

@@ -15,6 +15,10 @@ abstract class StringValueObject
 		return $this->value;
 	}
 
+    final public function __toString(): string
+    {
+        return $this->value;
+    }
 
 
      public static function random($max_chars): self

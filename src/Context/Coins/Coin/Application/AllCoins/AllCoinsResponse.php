@@ -6,7 +6,7 @@ use App\SharedKernel\Domain\Bus\Query\Response;
 
 class AllCoinsResponse implements Response
 {
-    public function __construct(private readonly array $coins)
+    public function __construct(private readonly mixed $coins)
     {
     }
 

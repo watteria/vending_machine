@@ -1,18 +1,18 @@
 SHELL := /bin/bash
 DOCKER_BE = ddd-skeleton-be
 
-NAME_S := $(shell uname -s)
+UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)
     OS := Linux
-    UID := $(shell id -u)
 else ifeq ($(UNAME_S),Darwin)
     OS := MacOS
-    UID := $(shell id -u)
 else
     OS := Windows
-    UID := 1000  # valor per a windows
 endif
+
+UID := 1002
+GID := 1002
 
 # Colours
 greenColour=\e[0;32m\033[1m
@@ -32,16 +32,16 @@ help: ## Show this help message
 up: ## Start the containers
 	$(MAKE) copy-files
 ifeq ($(OS), Windows)
-	set U_ID=$(UID) && docker-compose up -d
+	set U_ID=$(UID)  && set G_ID=$(GID) && docker-compose up -d
 else
-	U_ID=${UID} docker-compose up -d
+	U_ID=${UID} G_ID=${GID} docker-compose up -d
 endif
 
 down: ## Stop the containers
 ifeq ($(OS), Windows)
-	set U_ID=$(UID) && docker-compose stop
+	set U_ID=$(UID) &&  set G_ID=$(GID) && docker-compose stop
 else
-	U_ID=${UID} docker-compose stop
+	U_ID=${UID} G_ID=${GID} docker-compose stop
 endif
 
 restart: ## Restart the containers
@@ -50,33 +50,33 @@ restart: ## Restart the containers
 build: ## Rebuilds all the containers
 	$(MAKE) copy-files
 ifeq ($(OS), Windows)
-	set U_ID=$(UID) && docker-compose build
+	set U_ID=$(UID) && set G_ID=$(GID) && docker-compose build
 else
-	U_ID=${UID} docker-compose build
+	U_ID=${UID} G_ID=${GID} docker-compose build
 endif
 
 copy-files: ## Creates a copy of .env and docker-compose.yml.dist file to use locally
-ifeq ($(OS), Linux)
-	cp -n .env .env.local || true
-	cp -n docker-compose.yml.dist docker-compose.yml || true
-else
+ifeq ($(OS), Windows)
 	powershell -Command "if (!(Test-Path .env.local)) { Copy-Item .env .env.local }"
 	powershell -Command "if (!(Test-Path docker-compose.yml)) { Copy-Item docker-compose.yml.dist docker-compose.yml }"
+else
+	cp -n .env .env.local || true
+	cp -n docker-compose.yml.dist docker-compose.yml || true
 endif
 
 # Backend commands
 composer-install: ## Installs composer dependencies
 ifeq ($(OS), Windows)
-	set U_ID=$(UID) && docker exec --user $(UID) -it $(DOCKER_BE) composer install --no-scripts --no-interaction --optimize-autoloader
+	set U_ID=$(UID) && set G_ID=$(GID) && docker exec --user $(UID) -it $(DOCKER_BE) composer install --no-scripts --no-interaction --optimize-autoloader
 else
-	U_ID=${UID} docker exec --user ${UID} -it ${DOCKER_BE} composer install --no-scripts --no-interaction --optimize-autoloader
+	U_ID=${UID}  G_ID=$(GID)  docker exec --user ${UID} -it ${DOCKER_BE} composer install --no-scripts --no-interaction --optimize-autoloader
 endif
 
 cli: ## ssh's into the be container
 ifeq ($(OS), Windows)
-	set U_ID=$(UID) && docker exec -it --user $(UID) $(DOCKER_BE) bash
+	set U_ID=$(UID) && set G_ID=$(GID) && docker exec -it --user $(UID) $(DOCKER_BE) bash
 else
-	U_ID=${UID} docker exec -it --user ${UID} ${DOCKER_BE} bash
+	U_ID=${UID} G_ID=${GID} docker exec -it --user ${UID} ${DOCKER_BE} bash
 endif
 
 container-names: ## Change default container names (need param name)
@@ -87,13 +87,17 @@ reset-symfony-test-cache: ## Clear testing cache
 	docker exec --user ${UID} -it ${DOCKER_BE} bin/console cache:clear --env=test
 
 recreate-db: ## Recreate database
-	docker exec --user ${UID} -it ${DOCKER_BE} bin/console d:sc:drop -n -q -f --full-database
-	docker exec --user ${UID} -it ${DOCKER_BE} bin/console d:mi:mi -n
+	docker exec --user $(UID) -it ddd-skeleton-mongodb bash  /docker-entrypoint-initdb.d/init-mongo.sh
 
 
 load-db-fixtures: ## Load fixtures
 	docker exec --user ${UID} -it ${DOCKER_BE} bin/console d:f:load -n
 
+symfony-warmup:
+	docker exec --user ${UID} -it ${DOCKER_BE} bash -c "php /appdata/www/bin/console cache:warmup --env=prod"
+
+fix-permissions:
+	docker exec --user root -it ${DOCKER_BE} bash -c "mkdir -p /appdata/www/var/cache && chmod -R 777 /appdata/www/var/cache"
 
 test-unit: ## Execute unit tests
 	$(MAKE) recreate-db
@@ -104,7 +108,6 @@ test-unit: ## Execute unit tests
 test-acceptance-behat: ## Execute behat tests
 	$(MAKE) recreate-db
 	make reset-symfony-test-cache
-	make load-db-fixtures
 	docker exec --user ${UID} -it ${DOCKER_BE} vendor/bin/behat
 	$(MAKE) recreate-db
 
@@ -117,9 +120,22 @@ install: ## Init tot de cop
 	$(MAKE) up
 	$(MAKE) npm-install
 	$(MAKE) composer-install
+	$(MAKE) fix-permissions
+	$(MAKE) symfony-warmup
+
+
+open-browser:
+ifeq ($(OS), Windows)
+	start chrome  "http://localhost:1002/"
+else ifeq ($(OS), MacOS)
+	open "http://localhost:1002/"
+else
+	xdg-open "http://localhost:1002/"
+endif
+
 
 init: ## Init tot de cop
 	$(MAKE) down
-	$(MAKE) build
 	$(MAKE) up
 	$(MAKE) recreate-db
+	$(MAKE) open-browser

@@ -83,5 +83,28 @@ services:
 
   App\SharedKernel\Domain\Bus\Event\EventBus: '@App\SharedKernel\Infrastructure\Bus\Event\RabbitMq\RabbitMqEventBus'
 
+
+  App\Context\Customers\Customer\Infrastructure\Persistence\Doctrine\MongoDocumentCustomerRepository:
+    arguments:
+      $documentManager: '@doctrine_mongodb.odm.document_manager'
+
+  App\Context\Coins\Coin\Infrastructure\Persistence\Doctrine\MongoDocumentCoinRepository:
+    arguments:
+      $documentManager: '@doctrine_mongodb.odm.document_manager'
+
+  App\Context\Items\Item\Infrastructure\Persistence\Doctrine\MongoDocumentItemRepository:
+    arguments:
+      $documentManager: '@doctrine_mongodb.odm.document_manager'
+
+  App\Context\Items\Item\Domain\Repository\ItemRepository:
+    alias: App\Context\Items\Item\Infrastructure\Persistence\Doctrine\MongoDocumentItemRepository
+
+  App\Context\Coins\Coin\Domain\Repository\CoinRepository:
+    alias: App\Context\Coins\Coin\Infrastructure\Persistence\Doctrine\MongoDocumentCoinRepository
+
+  App\Context\Customers\Customer\Domain\Repository\CustomerRepository:
+    alias: App\Context\Customers\Customer\Infrastructure\Persistence\Doctrine\MongoDocumentCustomerRepository
+
+
 parameters:
   app.passwpord: '%env(SUPLIER_PASSWORD)%'

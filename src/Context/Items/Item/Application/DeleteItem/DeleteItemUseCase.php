@@ -22,7 +22,8 @@ class DeleteItemUseCase
     {
         $item = Item::delete($item_id, $product_name,$quantity,$price);
 
-        $this->repository->delete($item);
+        $item_repository = $this->repository->search($item_id);
+        $this->repository->delete($item_repository);
 
         $this->eventBus->publish(...$item->pullDomainEvents());
     }

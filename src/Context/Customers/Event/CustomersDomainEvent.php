@@ -27,10 +27,10 @@ abstract class CustomersDomainEvent extends DomainEvent
     public function toPrimitives(): array
     {
         return [
-            'customer_id' => $this->customer_id,
-            'id_product' => $this->id_product,
-            'inserted_money' => $this->inserted_money,
-            'status' => $this->status,
+            'customer_id' => (string)$this->customer_id,
+            'id_product' => (string)$this->id_product,
+            'inserted_money' => json_encode($this->inserted_money),
+            'status' => (string)$this->status,
             'remaining_machine_coins' => $this->remaining_machine_coins,
         ];
     }

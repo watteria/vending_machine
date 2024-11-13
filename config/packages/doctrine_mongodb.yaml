@@ -1,0 +1,53 @@
+doctrine_mongodb:
+    auto_generate_proxy_classes: false
+    auto_generate_hydrator_classes: false
+    auto_generate_persistent_collection_classes: false
+    connections:
+        default:
+            server: 'mongodb://ddd-skeleton-mongodb:27017'
+            options:
+                username: 'root'
+                password: 'rootpassword'
+                db: 'database'
+    default_database: 'database'
+    document_managers:
+        default:
+            auto_mapping: true
+            logging: true
+            mappings:
+                Items:
+                    type: xml
+                    is_bundle: false
+                    dir: '%kernel.project_dir%/src/Context/Items/Item/Infrastructure/Persistence/Doctrine/mongo_mapping'
+                    prefix: 'App\Context\Items\Item\Domain'
+                    mapping: true
+                    alias: Items
+
+                Coins:
+                    type: xml
+                    is_bundle: false
+                    dir: '%kernel.project_dir%/src/Context/Coins/Coin/Infrastructure/Persistence/Doctrine/mongo_mapping'
+                    prefix: 'App\Context\Coins\Coin\Domain'
+                    mapping: true
+                    alias: Coins
+
+                Customers:
+                    type: xml
+                    is_bundle: false
+                    dir: '%kernel.project_dir%/src/Context/Customers/Customer/Infrastructure/Persistence/Doctrine/mongo_mapping'
+                    prefix: 'App\Context\Customers\Customer\Domain'
+                    mapping: true
+                    alias: Customers
+
+    types:
+        item_id: App\Context\Items\Item\Infrastructure\Persistence\Doctrine\mapping\ItemIdType
+        item_price: App\Context\Items\Item\Infrastructure\Persistence\Doctrine\mapping\ItemPriceType
+        item_productname: App\Context\Items\Item\Infrastructure\Persistence\Doctrine\mapping\ItemProductNameType
+        item_quantity: App\Context\Items\Item\Infrastructure\Persistence\Doctrine\mapping\ItemQuantityType
+        coin_id: App\Context\Coins\Coin\Infrastructure\Persistence\Doctrine\mapping\CoinIdType
+        coin_quantity: App\Context\Coins\Coin\Infrastructure\Persistence\Doctrine\mapping\CoinQuantityType
+        coin_valid_for_change: App\Context\Coins\Coin\Infrastructure\Persistence\Doctrine\mapping\CoinValidForChangeType
+        coin_value: App\Context\Coins\Coin\Infrastructure\Persistence\Doctrine\mapping\CoinValueType
+        customer_id: App\Context\Customers\Customer\Infrastructure\Persistence\Doctrine\mapping\CustomerIdType
+        customer_status: App\Context\Customers\Customer\Infrastructure\Persistence\Doctrine\mapping\CustomerStatusType
+        customer_inserted_money: App\Context\Customers\Customer\Infrastructure\Persistence\Doctrine\mapping\CustomerInsertedMoneyType

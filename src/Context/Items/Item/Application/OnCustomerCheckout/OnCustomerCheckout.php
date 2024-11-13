@@ -24,8 +24,10 @@ class OnCustomerCheckout implements DomainEventSubscriber
     {
 
         $product=$this->queryBus->ask(new GetItemQuery($event->id_product()));
-        $this->commandBus->dispatch(new UpdateItemCommand(new ItemId($product['item_id']), new ItemProductName($product['product_name']),
-            new ItemQuantity($product['quantity']-1), new ItemPrice($product['price'])));
+        $item=$product->result();
+
+        $this->commandBus->dispatch(new UpdateItemCommand(new ItemId($item['item_id']), new ItemProductName($item['product_name']),
+            new ItemQuantity($item['quantity']-1), new ItemPrice($item['price'])));
     }
 
     public static function subscribedTo(): array

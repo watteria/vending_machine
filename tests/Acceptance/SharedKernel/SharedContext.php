@@ -27,7 +27,7 @@ use Behat\Gherkin\Node\TableNode;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ODM\MongoDB\DocumentManager;
 use PHPUnit\Framework\Assert;
 use SebastianBergmann\Diff\Differ;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -39,13 +39,13 @@ final class SharedContext implements Context
 {
     private ?Response $response; 
     private KernelBrowser $client;
-    private EntityManagerInterface $entityManager;
+    private DocumentManager $documentManager;
     private array $itemData;
 
 
-    public function __construct(KernelInterface $kernel, EntityManagerInterface $entityManager)
+    public function __construct(KernelInterface $kernel, DocumentManager  $documentManager)
     {
-        $this->entityManager = $entityManager;
+        $this->documentManager = $documentManager;
         $client = $kernel->getContainer()->get('test.client');
 
         if (!$client instanceof KernelBrowser) {
@@ -94,15 +94,15 @@ final class SharedContext implements Context
         if ($data === null) {
             throw new \InvalidArgumentException("Invalid JSON provided");
         }
-        $this->entityManager->createQuery('DELETE FROM App\Context\Items\Item\Domain\Item')->execute();
+        $this->documentManager->getRepository(Item::class)->createQueryBuilder()->remove()->getQuery()->execute();
         $item = new Item(
             new ItemId($data['item_id']),
             new ItemProductName($data['product_name']),
             new ItemQuantity($data['quantity']),
             new ItemPrice($data['price'])
         );
-        $this->entityManager->persist($item);
-        $this->entityManager->flush();
+        $this->documentManager->persist($item);
+        $this->documentManager->flush();
     }
 
 
@@ -113,14 +113,14 @@ final class SharedContext implements Context
     {
         $loader = new Loader();
 
-        $this->entityManager->createQuery('DELETE FROM App\Context\Items\Item\Domain\Item')->execute();
+        $this->documentManager->getRepository(Item::class)->createQueryBuilder()->remove()->getQuery()->execute();
         $numberOfItems = 5;
         for ($i = 0; $i < $numberOfItems; $i++) {
             $item = ItemMother::create();
-            $this->entityManager->persist($item);
+            $this->documentManager->persist($item);
         }
 
-        $this->entityManager->flush();
+        $this->documentManager->flush();
     }
 
 
@@ -135,7 +135,7 @@ final class SharedContext implements Context
             throw new \InvalidArgumentException("Invalid JSON provided");
         }
 
-        $this->entityManager->createQuery('DELETE FROM App\Context\Coins\Coin\Domain\Coin')->execute();
+        $this->documentManager->getRepository(Coin::class)->createQueryBuilder()->remove()->getQuery()->execute();
 
         foreach ($data as $data_item) {
             $coin = new Coin(
@@ -145,11 +145,11 @@ final class SharedContext implements Context
                 new CoinValidForChange((bool)$data_item['valid_for_change'])
             );
 
-            $this->entityManager->persist($coin);
+            $this->documentManager->persist($coin);
         }
 
 
-        $this->entityManager->flush();
+        $this->documentManager->flush();
     }
 
 
@@ -159,14 +159,14 @@ final class SharedContext implements Context
     public function theDatabaseContainsMultipleCoins()
     {
         $loader = new Loader();
-        $this->entityManager->createQuery('DELETE FROM App\Context\Coins\Coin\Domain\Coin')->execute();
+        $this->documentManager->getRepository(Coin::class)->createQueryBuilder()->remove()->getQuery()->execute();
         $numberOfCoins = 5; //
         for ($i = 0; $i < $numberOfCoins; $i++) {
             $item = CoinMother::create();
-            $this->entityManager->persist($item);
+            $this->documentManager->persist($item);
         }
 
-        $this->entityManager->flush();
+        $this->documentManager->flush();
     }
 
     /**
@@ -178,7 +178,7 @@ final class SharedContext implements Context
         if ($data === null) {
             throw new \InvalidArgumentException("Invalid JSON provided");
         }
-        $this->entityManager->createQuery('DELETE FROM App\Context\Customers\Customer\Domain\Customer')->execute();
+        $this->documentManager->getRepository(Customer::class)->createQueryBuilder()->remove()->getQuery()->execute();
 
         if(!isset($data['customer_id'])){
             $data['customer_id']=UuidMother::create();
@@ -191,8 +191,8 @@ final class SharedContext implements Context
             $data['remaining_machine_coins']
         );
 
-        $this->entityManager->persist($customer);
-        $this->entityManager->flush();
+        $this->documentManager->persist($customer);
+        $this->documentManager->flush();
 
     }
 

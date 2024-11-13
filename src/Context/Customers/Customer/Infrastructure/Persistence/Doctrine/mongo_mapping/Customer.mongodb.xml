@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
+        <document  name="App\Context\Customers\Customer\Domain\Customer" collection="customers">
+            <id field-name="_id"  type="string" strategy="NONE" />
+            <field name="customer_id" type="customer_id"   />
+            <field name="id_product" type="item_id"   />
+            <field name="inserted_money" type="customer_inserted_money"   />
+            <field name="status" type="customer_status"  />
+        </document >
+</doctrine-mongo-mapping>

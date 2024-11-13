@@ -60,10 +60,7 @@ function ItemList({ items, setItems, setMensaje, loading,setAccesoPermitido,upda
     ));
   };
 
-  const handleLogout = () => {
-    setAccesoPermitido(false);
-    setMensaje('Logged Out');
-  };
+
 
   return (
       <div className="container mt-4">
@@ -127,14 +124,6 @@ function ItemList({ items, setItems, setMensaje, loading,setAccesoPermitido,upda
           ))}
         </div>
 
-        <div className="text-center mt-4">
-          <button
-              onClick={handleLogout}
-              className="btn btn-warning"
-          >
-            Logout
-          </button>
-        </div>
       </div>
   );
 }

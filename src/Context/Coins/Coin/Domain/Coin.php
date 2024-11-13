@@ -9,10 +9,32 @@ use App\Context\Coins\Coin\Domain\ValueObject\CoinValidForChange;
 use App\Context\Coins\Coin\Domain\ValueObject\CoinValue;
 use App\SharedKernel\Domain\Aggregate\AggregateRoot;
 
+#[ODM\Document(collection: "coins")]
 class Coin extends AggregateRoot
 {
-    public function __construct(private readonly  CoinId $coin_id,  private readonly CoinQuantity $quantity, private readonly CoinValue $coin_value, private readonly CoinValidForChange $valid_for_change)
+
+    #[ODM\Id(strategy: 'NONE', type: 'string')]
+    private string $_id;
+
+    #[ODM\Field(type: 'coin_id')]
+    private  CoinId $coin_id;
+
+    #[ODM\Field(type: 'coin_quantity')]
+    private  CoinQuantity $quantity;
+
+    #[ODM\Field(type: 'coin_value')]
+    private  CoinValue $coin_value;
+
+    #[ODM\Field(type: 'coin_valid_for_change')]
+    private  CoinValidForChange $valid_for_change;
+
+    public function __construct(CoinId $coin_id,  CoinQuantity $quantity, CoinValue $coin_value, CoinValidForChange $valid_for_change)
     {
+        $this->_id = $coin_id;
+        $this->coin_id = $coin_id;
+        $this->quantity = $quantity;
+        $this->coin_value = $coin_value;
+        $this->valid_for_change = $valid_for_change;
     }
     public function id(): CoinId
     {

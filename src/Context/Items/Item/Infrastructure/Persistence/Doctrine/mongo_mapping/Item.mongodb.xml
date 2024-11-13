@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
+
+        <document  name="App\Context\Items\Item\Domain\Item" collection="items">
+                <id field-name="_id"  type="string" strategy="NONE" />
+                <field name="item_id" type="item_id"   />
+                <field name="product_name" type="item_productname"   />
+                <field name="quantity" type="item_quantity"   />
+                <field name="price" type="item_price"  />
+            </document >
+</doctrine-mongo-mapping>

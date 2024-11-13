@@ -18,6 +18,11 @@ class DeleteItemUseCaseTest extends UnitTestCase
         $item = ItemMother::default();
 
 
+        $repository
+            ->expects(self::exactly(2))
+            ->method('search')
+            ->withConsecutive([$item->item_id()->value()], [$item->item_id()->value()])
+            ->willReturnOnConsecutiveCalls($item, null);
 
         $repository
             ->expects(self::once())
@@ -29,13 +34,6 @@ class DeleteItemUseCaseTest extends UnitTestCase
 
         $useCase = new DeleteItemUseCase($repository, $eventBus);
         $useCase->__invoke($item->item_id(),$item->product_name(),$item->quantity(),$item->price());
-
-
-        $repository
-            ->expects(self::once())
-            ->method('search')
-            ->with($item->item_id()->value())
-            ->willReturn(null);
 
 
         $deletedItem = $repository->search($item->item_id()->value());

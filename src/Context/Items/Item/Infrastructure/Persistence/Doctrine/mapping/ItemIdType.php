@@ -2,23 +2,18 @@
 namespace App\Context\Items\Item\Infrastructure\Persistence\Doctrine\mapping;
 
 use App\Context\Items\Item\Domain\ValueObject\ItemId;
-use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\Type;
+use Doctrine\ODM\MongoDB\Types\Type;
 
 class ItemIdType extends Type{
     const NAME = 'item_id';
 
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
-    {
-        return $platform->getStringTypeDeclarationSQL($column);
-    }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value): ItemId
     {
     return new ItemId($value);
     }
 
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value)
     {
     return $value instanceof ItemId ? $value->value() : $value;
     }
@@ -26,5 +21,9 @@ class ItemIdType extends Type{
     public function getName()
     {
     return self::NAME;
+    }
+    public function closureToPHP(): string
+    {
+        return '$return = new \App\Context\Items\Item\Domain\ValueObject\ItemId($value);';
     }
 }

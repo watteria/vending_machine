@@ -424,7 +424,7 @@ Feature: Customer Checkout
           "coin_id": "3991b21f-3d6f-43bd-899c-a53bc5d2da13",
           "quantity": 20,
           "coin_value": 0.25,
-            "valid_for_change": 1
+          "valid_for_change": 1
         },
         {
           "coin_id": "3a990a45-bd5c-41a7-82e8-c9b21a581220",

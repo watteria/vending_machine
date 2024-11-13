@@ -4,10 +4,6 @@ namespace App\Context\Coins\Coin\Infrastructure\Persistence\Doctrine;
 
 use App\Context\Coins\Coin\Domain\Repository\CoinRepository;
 use App\Context\Coins\Coin\Domain\Coin;
-use App\Context\Coins\Coin\Domain\ValueObject\CoinId;
-use App\Context\Coins\Coin\Domain\ValueObject\CoinQuantity;
-use App\Context\Coins\Coin\Domain\ValueObject\CoinValidForChange;
-use App\Context\Coins\Coin\Domain\ValueObject\CoinValue;
 use App\SharedKernel\Infrastructure\Persistence\Doctrine\DoctrineRepository;
 use Doctrine\ORM\NativeQuery;
 use Doctrine\ORM\Query\ResultSetMapping;

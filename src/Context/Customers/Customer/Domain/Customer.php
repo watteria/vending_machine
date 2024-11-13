@@ -12,10 +12,34 @@ use App\Context\Customers\Customer\Domain\ValueObject\CustomerStatus;
 use App\Context\Items\Item\Domain\ValueObject\ItemId;
 use App\SharedKernel\Domain\Aggregate\AggregateRoot;
 
+#[ODM\Document(collection: "customers")]
 class Customer extends AggregateRoot
 {
-    public function __construct(private readonly CustomerId $customer_id, private readonly ItemId $id_product, private readonly CustomerInsertedMoney $inserted_money, private readonly CustomerStatus $status, private readonly array $remaining_machine_coins)
+
+    #[ODM\Id(strategy: 'NONE', type: 'string')]
+    private string $_id;
+
+    #[ODM\Field(type: 'customer_id')]
+    private  CustomerId $customer_id;
+
+    #[ODM\Field(type: 'item_id')]
+    private  ItemId $id_product;
+
+    #[ODM\Field(type: 'inserted_money')]
+    private  CustomerInsertedMoney $inserted_money;
+
+    #[ODM\Field(type: 'customer_status')]
+    private  CustomerStatus $status;
+    private array $remaining_machine_coins;
+
+    public function __construct(CustomerId $customer_id, ItemId $id_product, CustomerInsertedMoney $inserted_money, CustomerStatus $status, array $remaining_machine_coins)
     {
+        $this->_id = $customer_id;
+        $this->customer_id = $customer_id;
+        $this->id_product = $id_product;
+        $this->inserted_money = $inserted_money;
+        $this->status = $status;
+        $this->remaining_machine_coins = $remaining_machine_coins;
     }
     public function id(): CustomerId
     {

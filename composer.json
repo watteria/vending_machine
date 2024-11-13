@@ -13,11 +13,14 @@
   ],
   "require": {
     "php": ">=8.1",
+    "ext-amqp": "*",
     "ext-ctype": "*",
     "ext-iconv": "*",
     "beberlei/assert": "^3.3",
     "doctrine/doctrine-bundle": "^2.10",
     "doctrine/doctrine-migrations-bundle": "^3.2",
+    "doctrine/mongodb-odm": "*",
+    "doctrine/mongodb-odm-bundle": "*",
     "doctrine/orm": "^2.16",
     "fakerphp/faker": "*",
     "lambdish/phunctional": "^2.1",
@@ -32,14 +35,14 @@
     "symfony/framework-bundle": "6.3.*",
     "symfony/http-client": "6.3.*",
     "symfony/messenger": "6.3.*",
+    "symfony/monolog-bundle": "^3.10",
     "symfony/runtime": "6.3.*",
     "symfony/security-bundle": "6.3.*",
     "symfony/twig-bundle": "6.3.*",
     "symfony/validator": "6.3.*",
     "symfony/var-dumper": "6.3.*",
     "symfony/yaml": "6.3.*",
-    "twig/twig": "*",
-    "ext-amqp": "*"
+    "twig/twig": "*"
   },
   "config": {
     "allow-plugins": {
@@ -85,7 +88,7 @@
   },
   "extra": {
     "symfony": {
-      "allow-contrib": false,
+      "allow-contrib": "true",
       "require": "6.3.*"
     }
   },

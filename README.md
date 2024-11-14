@@ -454,7 +454,7 @@ Response:
 }
 ``` 
 
-##### Checkout Customer without token
+### Checkout Customer without token
 Url: http://localhost:1000/api/customers/checkout/ \
 Method: POST \
 Request:
@@ -500,7 +500,7 @@ Response:
 }
 ```
 
-##### Checkout Customer
+### Checkout Customer
 Url: http://localhost:1000/api/customers/checkout/{customer_id} \
 Method: POST \
 Request:
@@ -547,7 +547,7 @@ Response:
 ```
 
 
-##### Reset Customer without token
+### Reset Customer without token
 Url: http://localhost:1000/api/customers/reset/ \
 Method: POST \
 Request:
@@ -566,7 +566,7 @@ Response:
 
 
 
-##### Reset Customer with token
+### Reset Customer with token
 Url: http://localhost:1000/api/customers/reset/{customer_id} \
 Method: POST \
 Request:
@@ -597,10 +597,9 @@ Response:
 ```
 
 
-##### Password verify
-Url: http://localhost:1000/api/total \
-Method: POST
-
+### Password verify
+Url: http://localhost:1000/api/password-verify \
+Method: POST\
 Request:
 ```JSON
 {

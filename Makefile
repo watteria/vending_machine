@@ -87,7 +87,12 @@ reset-symfony-test-cache: ## Clear testing cache
 	docker exec --user ${UID} -it ${DOCKER_BE} bin/console cache:clear --env=test
 
 recreate-db: ## Recreate database
+ifeq ($(OS), Windows)
+	docker exec --user $(UID) -it ddd-skeleton-mongodb bash  /docker-entrypoint-initdb.d/init-mongo-windows.sh
+else
 	docker exec --user $(UID) -it ddd-skeleton-mongodb bash  /docker-entrypoint-initdb.d/init-mongo.sh
+endif
+
 
 
 load-db-fixtures: ## Load fixtures
@@ -97,9 +102,10 @@ symfony-warmup:
 	docker exec --user ${UID} -it ${DOCKER_BE} bash -c "php /appdata/www/bin/console cache:warmup --env=prod"
 
 fix-permissions:
-
-	docker exec --user root -it ${DOCKER_BE} chmod -R 777 /appdata/www/var/cache /appdata/www/var/log
+	docker exec --user root -it ${DOCKER_BE} bash -c "mkdir -p /appdata/www/var/cache /appdata/www/var/log && chmod -R 777 /appdata/www/var/cache /appdata/www/var/log"
 	docker exec --user root -it ddd-skeleton-mongodb chmod -R 777 /data/db
+
+
 
 test-unit: ## Execute unit tests
 	$(MAKE) recreate-db
@@ -135,9 +141,18 @@ else
 	xdg-open "http://localhost:1002/"
 endif
 
+wait-for-mongo:
+	@echo "Esperando a que MongoDB esté listo..."
+	@until docker exec ddd-skeleton-mongodb mongosh --host localhost --port 27017 -u root -p rootpassword --authenticationDatabase admin --eval "db.stats()" > /dev/null 2>&1; do \
+		echo "MongoDB no está listo, esperando..."; \
+		sleep 5; \
+	done
+	@echo "MongoDB está listo."
 
 init: ## Init tot de cop
 	$(MAKE) down
 	$(MAKE) up
+	$(MAKE) wait-for-mongo
 	$(MAKE) recreate-db
 	$(MAKE) open-browser
+

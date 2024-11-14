@@ -13,6 +13,8 @@ RUN mkdir -p /data/db && \
     chmod -R 777 /data/db
 
 COPY init-mongo.sh /docker-entrypoint-initdb.d/init-mongo.sh
+COPY init-mongo-windows.sh /docker-entrypoint-initdb.d/init-mongo-windows.sh
 RUN chmod +x /docker-entrypoint-initdb.d/init-mongo.sh
+RUN chmod +x /docker-entrypoint-initdb.d/init-mongo-windows.sh
 
 USER appuser

@@ -15,6 +15,7 @@ db.coins.drop()
 EOF
 
 
+
 for file in ./mongo-seed/*.json; do
     collection=$(basename "$file" .json)
     mongoimport --username root --password rootpassword --authenticationDatabase admin \

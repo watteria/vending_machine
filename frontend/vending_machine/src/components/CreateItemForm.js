@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function CreateItemForm({ setItems, setMensaje,loading,updateHttpRequestInfo }) {
+function CreateItemForm({ setItems, setMensaje,loading,updateHttpRequestInfo,setIsLoadingData }) {
     const [product_name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [quantity, setQuantity] = useState('');
@@ -9,6 +9,7 @@ function CreateItemForm({ setItems, setMensaje,loading,updateHttpRequestInfo }) 
     // Gestiona  crear producte
     const handleCreateItem = async (newItem) => {
 
+        setIsLoadingData(true);
         const url = 'http://localhost:1000/api/items';
         try {
             const response = await axios.post(url, {
@@ -23,6 +24,8 @@ function CreateItemForm({ setItems, setMensaje,loading,updateHttpRequestInfo }) 
                 setItems(updatedItems.data);
                 setMensaje('Product successfully created');
             }
+
+            setIsLoadingData(false);
         } catch (error) {
             console.error('Error creating the product:', error);
             setMensaje('ERROR: creating the product');

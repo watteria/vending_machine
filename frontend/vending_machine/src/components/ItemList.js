@@ -1,13 +1,13 @@
 import React from 'react';
 import axios from 'axios';
 
-function ItemList({ items, setItems, setMensaje, loading,setAccesoPermitido,updateHttpRequestInfo  }) {
+function ItemList({ items, setItems, setMensaje, loading,setAccesoPermitido,updateHttpRequestInfo,setIsLoadingData  }) {
 
 
   // Gestiona canvi en un producte
   const handleUpdate = async (item_id, updatedItem) => {
     try {
-
+      setIsLoadingData(true);
       const url = `http://localhost:1000/api/items/${item_id}`;
       const response = await axios.post(url, {
         item_id: updatedItem.item_id,
@@ -25,6 +25,8 @@ function ItemList({ items, setItems, setMensaje, loading,setAccesoPermitido,upda
         const errorMessages = response.data.errors.data.join(', ');
         setMensaje(errorMessages);
       }
+
+      setIsLoadingData(false);
     } catch (error) {
       console.error('ERROR: updating product:', error);
     }
@@ -34,6 +36,7 @@ function ItemList({ items, setItems, setMensaje, loading,setAccesoPermitido,upda
   const handleDelete = async (item_id,item_deleted) => {
     try {
 
+      setIsLoadingData(true);
       const url = `http://localhost:1000/api/items/${item_id}`;
       const response = await axios.delete(url,{
         data : {
@@ -48,6 +51,8 @@ function ItemList({ items, setItems, setMensaje, loading,setAccesoPermitido,upda
         updateHttpRequestInfo('DELETE', url,null, response.data);
         setItems(items.filter(item => item.item_id !== item_id));
       }
+
+      setIsLoadingData(false);
     } catch (error) {
       console.error('ERROR: deleting product:', error);
     }

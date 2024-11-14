@@ -15,6 +15,11 @@ class InsertedMoneyCustomerController extends AbstractController
 {
     public function __construct(private readonly QueryBus $queryBus){}
 
+    /***
+     * Get inserted money by customer
+     * @param Request $request
+     * @return Response
+     */
     public function __invoke(Request $request): Response
     {
 

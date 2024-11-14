@@ -10,6 +10,11 @@ use App\SharedKernel\Domain\Bus\Event\DomainEvent;
 
 final class DomainEventJsonSerializer
 {
+    /***
+     * Serialize message to rabbit
+     * @param DomainEvent $domainEvent
+     * @return string
+     */
 	public static function serialize(DomainEvent $domainEvent): string
 	{
 		return json_encode(

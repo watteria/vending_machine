@@ -97,7 +97,9 @@ symfony-warmup:
 	docker exec --user ${UID} -it ${DOCKER_BE} bash -c "php /appdata/www/bin/console cache:warmup --env=prod"
 
 fix-permissions:
-	docker exec --user root -it ${DOCKER_BE} bash -c "mkdir -p /appdata/www/var/cache && chmod -R 777 /appdata/www/var/cache"
+
+	docker exec --user root -it ${DOCKER_BE} chmod -R 777 /appdata/www/var/cache /appdata/www/var/log
+	docker exec --user root -it ddd-skeleton-mongodb chmod -R 777 /data/db
 
 test-unit: ## Execute unit tests
 	$(MAKE) recreate-db
@@ -112,13 +114,13 @@ test-acceptance-behat: ## Execute behat tests
 	$(MAKE) recreate-db
 
 npm-install: ## Ejecuta npm install en /frontend/vending_machine
-	cd frontend/vending_machine && npm install
+	cd frontend/vending_machine && npm config set strict-ssl false && npm install --force --loglevel verbose
 
 install: ## Init tot de cop
+	$(MAKE) npm-install
 	$(MAKE) down
 	$(MAKE) build
 	$(MAKE) up
-	$(MAKE) npm-install
 	$(MAKE) composer-install
 	$(MAKE) fix-permissions
 	$(MAKE) symfony-warmup

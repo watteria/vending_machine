@@ -13,6 +13,11 @@ class AllCoinsController extends AbstractController
 {
     public function __construct(private readonly QueryBus $queryBus){}
 
+    /**
+     * Get all Coins
+     * @param Request $request
+     * @return Response
+     */
     public function index(Request $request): Response
     {
         $response = $this->queryBus->ask(AllCoinsQuery::create());

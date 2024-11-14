@@ -13,6 +13,13 @@ class AvaiableItemsController extends AbstractController
 {
     public function __construct(private readonly QueryBus $queryBus){}
 
+    /***
+     * Get all avaiable items ( Quantity >0)
+     *
+     * @param Request $request
+     * @return Response
+     */
+
     public function __invoke(Request $request): Response
     {
         $response = $this->queryBus->ask(AllItemsQuery::create());

@@ -22,6 +22,12 @@ class UpdateItemController extends AbstractController
     {
     }
 
+    /***
+     * Update Item
+     *
+     * @param Request $request
+     * @return Response
+     */
     public function __invoke(Request $request): Response
     {
 
@@ -29,6 +35,8 @@ class UpdateItemController extends AbstractController
         if($jsonData === null) {
             $jsonData= $request->request->all();
         }
+
+        // Check request data
         $validationErrors = $this->validateRequest($jsonData);
         $messages=array();
 
@@ -43,6 +51,7 @@ class UpdateItemController extends AbstractController
             ], Response::HTTP_OK);
         }else{
 
+            // Dispatch to command bus
             $this->commandBus->dispatch(new UpdateItemCommand(new ItemId($jsonData['item_id']), new ItemProductName($jsonData['product_name']),
                 new ItemQuantity($jsonData['quantity']), new ItemPrice($jsonData['price'])));
 
@@ -50,6 +59,14 @@ class UpdateItemController extends AbstractController
         }
     }
 
+
+
+    /***
+     * Validate fields
+     *
+     * @param array $fields
+     * @return ConstraintViolationListInterface
+     */
     private function validateRequest(array $fields): ConstraintViolationListInterface
     {
         $constraint = new Assert\Collection(

@@ -2,8 +2,10 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function ItemSelection({ items, selectedItem, setSelectedItem,loading  }) {
+
+    // Gestiona item seleccionado
     const handleSelectItem = (item) => {
-        setSelectedItem(item);  // Cambiar el producto seleccionado
+        setSelectedItem(item);
     };
 
     return (

@@ -18,6 +18,15 @@ class UpdateCoinUseCase
     ) {
     }
 
+    /***
+     * Update Coin values
+     *
+     * @param CoinId $coin_id
+     * @param CoinQuantity $quantity
+     * @param CoinValue $coin_value
+     * @param CoinValidForChange $valid_for_change
+     * @return void
+     */
     public function __invoke(CoinId $coin_id, CoinQuantity $quantity,CoinValue $coin_value,CoinValidForChange $valid_for_change): void
     {
         $coin = Coin::update($coin_id, $quantity,$coin_value,$valid_for_change);

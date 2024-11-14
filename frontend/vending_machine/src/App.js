@@ -10,30 +10,37 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.css';
 
 
-// Inici App
+// Inici
 function App() {
+  // Items,Coins
   const [items, setItems] = useState([]);
   const [coins, setCoins] = useState([]);
+  // Messages
   const [mensaje, setMensaje] = useState('');
+  // User role - show/hide front/back
   const [accesoPermitido, setAccesoPermitido] = useState(false);
   const [password, setPassword] = useState('');
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [mostrarFormularioCompra, setMostrarFormularioCompra] = useState(true);
-  const [selectedItem, setSelectedItem] = useState(null);
   const [customerToken, setCustomerToken] = useState(null);
-  const [fadeClass] = useState('fade-out');
-  const [totalMonedas, setTotalMonedas] = useState(0);
-  const [loading, setLoading] = useState(false);
+  // Estados perque aixo tiri
+  const [selectedItem, setSelectedItem] = useState(null);
   const [totalAcumulado, setTotalAcumulado] = useState(null);
+  const [totalMonedas, setTotalMonedas] = useState(0);
+  // UX
+  const [fadeClass] = useState('fade-out');
+  const [loading, setLoading] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(true);
+  // Requet history
   const [httpRequestHistory, setHttpRequestHistory] = useState([]);
 
-  // Pilla hora actual
+// Current Local Time
   const getCurrentTime = () => {
     const now = new Date();
     return now.toLocaleTimeString();
   };
 
-  // Mostra les peticions
+  // Show HTTP Request Info
   const updateHttpRequestInfo = (method, url, requestData, responseData) => {
     const newRequest = {
       method,
@@ -45,10 +52,11 @@ function App() {
     setHttpRequestHistory(prevState => [...prevState, newRequest]);
   };
 
-  // Obté els items del back
+  // Get all the intems in the vending machine
   const fetchItems = async () => {
     try {
       setLoading(true);
+      setIsLoadingData(true);
       const url = 'http://localhost:1000/api/items';
       const response = await axios.get(url);
       setItems(response.data);
@@ -57,10 +65,12 @@ function App() {
       console.error('ERROR: fetching items:', error);
     } finally {
       setLoading(false);
+      setIsLoadingData(false);
     }
   };
 
-  // Obté les moneders del back
+
+  // Total coins in the machine
   const fetchTotalAcumulado = async () => {
     try {
       const url = 'http://localhost:1000/api/coins/total';
@@ -73,10 +83,12 @@ function App() {
     }
   };
 
-  // Càrrega inicial
+
+  // Initial loading
   const fetchInitialData = async () => {
     await fetchItems();
     await fetchTotalAcumulado();
+    setIsLoadingData(false);
   };
 
 
@@ -84,19 +96,24 @@ function App() {
     let initialData=fetchInitialData();
   }, []);
 
+
   // Gestiona el submit del password
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoadingData(true);
       const url = 'http://localhost:1000/api/password-verify';
       const response = await axios.post(url, { password: password });
       updateHttpRequestInfo('POST', url, { password: password }, response.data);
+      setIsLoadingData(false);
       if (response.status === 200 && response.data.accesoPermitido) {
         setAccesoPermitido(true);
         setMensaje('Access granted');
       } else {
         setMensaje('Wrong password, just write the word "password" , not that difficult');
       }
+
+
     } catch (error) {
       console.error('Error on validation:', error);
       setMensaje('ERROR: Wrong password');
@@ -115,6 +132,7 @@ function App() {
 
     try {
       setLoading(true);
+      setIsLoadingData(true);
       const response = await axios.post(url, {
         inserted_money: monedasParaEnviar,
         id_product: itemParaEnviar.item_id
@@ -135,12 +153,14 @@ function App() {
       setMensaje('ERROR: al on send data');
     } finally {
       setLoading(false);
+      setIsLoadingData(false);
     }
   };
 
 
   // Gestion solicitar producte
   const handleCustomerSubmit = async () => {
+    setIsLoadingData(true);
     const url = customerToken
         ? `http://localhost:1000/api/customers/checkout/${customerToken}`
         : 'http://localhost:1000/api/customers/checkout/';
@@ -150,7 +170,7 @@ function App() {
     const itemParaEnviar = selectedItem ? selectedItem : "";
 
     try {
-      setLoading(true);
+
       const response = await axios.post(url, {
         inserted_money: monedasParaEnviar,
         id_product: itemParaEnviar.item_id
@@ -162,8 +182,9 @@ function App() {
       if (!customerToken && response.data.customer_id) {
         setCustomerToken(response.data.customer_id);
       }
-    console.log(response.data);
+      setIsLoadingData(false);
       if (response.data.status === "return") {
+
         setMensaje(`
           <strong>Here's your product:</strong> ${selectedItem.product_name}. 
           <br />
@@ -205,6 +226,7 @@ function App() {
     }
   };
 
+  // Gestion de Logout
   const handleLogout = () => {
     setAccesoPermitido(false);
     setMensaje('Logged Out');
@@ -212,6 +234,7 @@ function App() {
 
   // Gestion de Retornar Canvi
   const handleReset = async () => {
+    setIsLoadingData(true);
     const url = customerToken
         ? `http://localhost:1000/api/customers/reset/${customerToken}`
         : 'http://localhost:1000/api/customers/reset/';
@@ -221,19 +244,19 @@ function App() {
     const itemParaEnviar = selectedItem ? selectedItem : "";
 
     try {
-      setLoading(true);
+
       const response = await axios.post(url, {
         inserted_money: monedasParaEnviar,
-        id_product: itemParaEnviar
+        id_product: itemParaEnviar.item_id
       });
       updateHttpRequestInfo('POST', url, {
         inserted_money: monedasParaEnviar,
-        id_product: itemParaEnviar
+        id_product: itemParaEnviar.item_id
       }, response.data);
       if (!customerToken && response.data.customer_id) {
         setCustomerToken(response.data.customer_id);
       }
-
+      setIsLoadingData(false);
 
       if (response.data.action === "return") {
         setMensaje(` 
@@ -261,7 +284,11 @@ function App() {
 
   return (
       <div className="app-container d-flex">
-
+        {isLoadingData && (
+            <div className="loading-popup">
+              <p>Loading...</p>
+            </div>
+        )}
         <div className="left-content w-70">
           <div className="App container mt-4">
             <h1 className="text-center mb-4">Vending Machine</h1>
@@ -280,7 +307,7 @@ function App() {
                 <>
                 {!mostrarFormulario && (
                     <div className="text-center">
-                      <p>To manage (edit/create/delete products, handle the change) click here.</p>
+                      <p>To manage (edit/create/delete products, handle the change) click  on Open the Vending Machine.</p>
                       <button className="btn btn-primary" onClick={() => setMostrarFormulario(true)}>Open the Vending Machine</button>
                     </div>
                 )}
@@ -325,6 +352,7 @@ function App() {
                         <CreateItemForm
                             setItems={setItems}
                             setMensaje={setMensaje}
+                            setIsLoadingData={setIsLoadingData}
                             loading={loading}
                             updateHttpRequestInfo={updateHttpRequestInfo}
                         />
@@ -337,11 +365,14 @@ function App() {
                           totalMonedas={totalMonedas}
                           handleCustomerAction={handleCustomerAction}
                           loading={loading}
+                          fetchTotalAcumulado={fetchTotalAcumulado}
+                          setIsLoadingData={setIsLoadingData}
                           updateHttpRequestInfo={updateHttpRequestInfo}
                           totalAcumulado={totalAcumulado}
                           setTotalAcumulado={setTotalAcumulado}
                       />
                       <ItemList
+                          setIsLoadingData={setIsLoadingData}
                           items={items}
                           setItems={setItems}
                           setMensaje={setMensaje}
@@ -357,6 +388,7 @@ function App() {
                           selectedItem={selectedItem}
                           setSelectedItem={setSelectedItem}
                           loading={loading}
+                          setLoading={setLoading}
                       />
                       <CoinManager
                           coins={coins}
@@ -366,6 +398,8 @@ function App() {
                           totalMonedas={totalMonedas}
                           handleCustomerAction={handleCustomerAction}
                           loading={loading}
+                          setLoading={setLoading}
+                          setIsLoadingData={setIsLoadingData}
                           updateHttpRequestInfo={updateHttpRequestInfo}
                           totalAcumulado={totalAcumulado}
                           setTotalAcumulado={setTotalAcumulado}

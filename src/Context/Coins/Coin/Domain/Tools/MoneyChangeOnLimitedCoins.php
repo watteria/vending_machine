@@ -2,6 +2,15 @@
 namespace App\Context\Coins\Coin\Domain\Tools;
 class MoneyChangeOnLimitedCoins
 {
+
+    /***
+     * It calculates the change to be returned based on the money in the machine, the user's money, and the product price.
+     *
+     * @param $machineCoins
+     * @param $userCoins
+     * @param $price
+     * @return array
+     */
     public static function calculateChange($machineCoins, $userCoins, $price): array
     {
         if($userCoins==0){
@@ -61,6 +70,13 @@ class MoneyChangeOnLimitedCoins
         ];
     }
 
+    /***
+     * It combines the user's and the machine's coins and updates their quantities.
+     * Only valid_for_chane=true coins
+     * @param $machineCoins
+     * @param $userCoins
+     * @return array
+     */
     private static function combineValidCoins($machineCoins, $userCoins)
     {
         $validCoins = [];
@@ -96,6 +112,12 @@ class MoneyChangeOnLimitedCoins
     }
 
 
+    /***
+     * Returns the change to be given back.
+     * @param $coins
+     * @param $amountToReturn
+     * @return array
+     */
     private static function calculateChangeToReturn($coins, $amountToReturn)
     {
         $change = [];
@@ -130,7 +152,13 @@ class MoneyChangeOnLimitedCoins
     }
 
 
-
+    /***
+     * Update Machine Coins
+     *
+     * @param $machineCoins
+     * @param $change
+     * @return mixed
+     */
     private static function updateMachineCoins($machineCoins, $change)
     {
         foreach ($change as $changeCoin) {

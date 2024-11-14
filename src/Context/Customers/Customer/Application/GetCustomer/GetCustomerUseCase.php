@@ -11,6 +11,12 @@ class GetCustomerUseCase
     {
     }
 
+    /***
+     * Get customer from CustomerId
+     *
+     * @param string $customer_id
+     * @return Customer|null
+     */
     public function __invoke(string $customer_id): ? Customer
     {
         $customers = $this->repository->search( $customer_id);

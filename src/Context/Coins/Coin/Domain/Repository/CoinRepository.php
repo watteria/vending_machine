@@ -4,9 +4,11 @@ namespace App\Context\Coins\Coin\Domain\Repository;
 
 use App\Context\Coins\Coin\Domain\Coin;
 
+/***
+ * Coin Repository Interface
+ */
 interface CoinRepository
 {
-
 
     public function searchAll(): array;
     public function search($coin_id): ?Coin;

@@ -8,6 +8,9 @@ use App\Context\Items\Item\Domain\ValueObject\ItemProductName;
 use App\Context\Items\Item\Domain\ValueObject\ItemQuantity;
 use App\SharedKernel\Domain\Bus\Event\DomainEvent;
 
+/***
+ * Items Domain Event
+ */
 abstract class ItemsDomainEvent extends DomainEvent
 {
 
@@ -25,7 +28,11 @@ abstract class ItemsDomainEvent extends DomainEvent
     }
 
 
-
+    /***
+     * Helps to write domain event body
+     *
+     * @return array
+     */
     public function toPrimitives(): array
     {
         return [

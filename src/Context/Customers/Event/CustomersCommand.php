@@ -8,6 +8,10 @@ use App\Context\Customers\Customer\Domain\ValueObject\CustomerStatus;
 use App\Context\Items\Item\Domain\ValueObject\ItemId;
 use App\SharedKernel\Domain\Bus\Command\Command;
 
+
+/***
+ * Customer command Bus
+ */
 abstract class CustomersCommand implements Command
 {
 

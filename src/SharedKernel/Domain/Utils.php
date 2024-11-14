@@ -40,6 +40,12 @@ final class Utils
 		return lcfirst(str_replace('_', '', ucwords($text, '_')));
 	}
 
+    /***
+     * Flattens a multidimensional array into a single-dimensional array using "dot" notation.
+     * @param array $array
+     * @param string $prepend
+     * @return array
+     */
 	public static function dot(array $array, string $prepend = ''): array
 	{
 		$results = [];
@@ -54,6 +60,12 @@ final class Utils
 		return $results;
 	}
 
+    /***
+     * Retrieves all files of a specific type within a given directory.
+     * @param string $path
+     * @param string $fileType
+     * @return array
+     */
 	public static function filesIn(string $path, string $fileType): array
 	{
 		return filter(

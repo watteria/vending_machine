@@ -11,6 +11,12 @@ use Faker\Factory;
 
 final class CustomerInsertedMoney extends JsonValueObject {
 
+
+    /***
+     * Generates random coins from a number of elements (int)
+     * @param $elements
+     * @return self
+     */
     public static function randomCoins($elements): self
     {
         return new static(json_encode(CoinMother::createArray($elements)));

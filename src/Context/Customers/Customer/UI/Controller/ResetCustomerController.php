@@ -28,6 +28,13 @@ class ResetCustomerController extends AbstractController
     {
     }
 
+
+    /***
+     * Return inserted money to customer and change customer state to cancelled in db
+     *
+     * @param Request $request
+     * @return Response
+     */
     public function __invoke(Request $request): Response
     {
 
@@ -46,7 +53,9 @@ class ResetCustomerController extends AbstractController
 
         $machineCoins=$this->queryBus->ask(AllCoinsQuery::create())->result();
         $change=MoneyChangeOnLimitedCoins::calculateChange($machineCoins,0,0);
-
+        if($jsonData['id_product']===null){
+            $jsonData['id_product']=ItemId::random();
+        }
         $this->commandBus->dispatch(new ResetCustomerCommand(new CustomerId($customer_id),new ItemId($jsonData['id_product']) , new CustomerInsertedMoney($jsonData['inserted_money']),new CustomerStatus( 'CANCELLED'),$change['coins_on_machine']));
         return new JsonResponse(['message' => $jsonData['inserted_money'],'action'=>'return'],Response::HTTP_OK);
 

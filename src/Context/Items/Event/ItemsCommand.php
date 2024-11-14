@@ -8,6 +8,9 @@ use App\Context\Items\Item\Domain\ValueObject\ItemProductName;
 use App\Context\Items\Item\Domain\ValueObject\ItemQuantity;
 use App\SharedKernel\Domain\Bus\Command\Command;
 
+/***
+ * Items Command Bus
+ */
 abstract class ItemsCommand implements Command
 {
 

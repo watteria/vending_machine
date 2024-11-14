@@ -18,6 +18,16 @@ class UpdateCustomerUseCase
     ) {
     }
 
+    /***
+     * Update Customer data
+     *
+     * @param CustomerId $customer_id
+     * @param ItemId $id_product
+     * @param CustomerInsertedMoney $inserted_money
+     * @param CustomerStatus $status
+     * @param array $remaining_machine_coins
+     * @return void
+     */
     public function __invoke(CustomerId $customer_id, ItemId $id_product,CustomerInsertedMoney  $inserted_money,CustomerStatus $status,array $remaining_machine_coins): void
     {
         $customer = Customer::update($customer_id, $id_product,$inserted_money,$status,$remaining_machine_coins);

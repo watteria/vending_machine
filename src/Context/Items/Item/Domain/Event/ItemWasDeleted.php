@@ -7,6 +7,16 @@ use App\SharedKernel\Domain\Bus\Event\DomainEvent;
 
 class ItemWasDeleted extends ItemsDomainEvent
 {
+
+    /***
+     * Read the data in the message in order to recreate the instance
+     *
+     * @param string $aggregateId
+     * @param array $body
+     * @param string $eventId
+     * @param string $occurredOn
+     * @return DomainEvent
+     */
     public static function fromPrimitives(
         string $aggregateId,
         array $body,

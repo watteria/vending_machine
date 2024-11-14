@@ -18,6 +18,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+
+/***
+ * Create a customer id and register in customers table
+ * @param Request $request
+ * @return Response
+ */
 class CreateCustomerController extends AbstractController
 {
     public function __construct(private readonly CommandBus $commandBus,private readonly QueryBus $queryBus)
@@ -39,6 +45,7 @@ class CreateCustomerController extends AbstractController
             $json_id_product="";
         }
 
+        // Get Machine current money
         $machineCoins=$this->queryBus->ask(AllCoinsQuery::create())->result();
         $change=MoneyChangeOnLimitedCoins::calculateChange($machineCoins,0,0);
 

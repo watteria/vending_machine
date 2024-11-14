@@ -9,10 +9,12 @@ use App\Context\Coins\Coin\Domain\ValueObject\CoinValidForChange;
 use App\Context\Coins\Coin\Domain\ValueObject\CoinValue;
 use App\SharedKernel\Domain\Aggregate\AggregateRoot;
 
+
 #[ODM\Document(collection: "coins")]
 class Coin extends AggregateRoot
 {
 
+    // ODM DEFINITION
     #[ODM\Id(strategy: 'NONE', type: 'string')]
     private string $_id;
 
@@ -64,6 +66,7 @@ class Coin extends AggregateRoot
     {
         $coin = new self($coin_id, $quantity,$coin_value,$valid_for_change);
 
+        // Register Domain Event
         $coin->record(new CoinWasUpdated(
             $coin->id(),
             $coin->coin_id(),

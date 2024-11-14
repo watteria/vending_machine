@@ -15,6 +15,7 @@ abstract class DoctrineRepository
         $this->repository = $this->entityManager->getRepository(static::entity());
     }
 
+
     public function doPersist(AggregateRoot $aggregate): void
     {
         $this->entityManager->persist($aggregate);

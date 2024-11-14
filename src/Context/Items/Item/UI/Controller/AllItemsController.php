@@ -13,6 +13,12 @@ class AllItemsController extends AbstractController
 {
     public function __construct(private readonly QueryBus $queryBus){}
 
+
+    /**
+     * Get all Items
+     * @param Request $request
+     * @return Response
+     */
     public function index(Request $request): Response
     {
         $response = $this->queryBus->ask(AllItemsQuery::create());

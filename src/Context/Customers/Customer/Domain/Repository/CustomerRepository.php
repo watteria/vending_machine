@@ -4,9 +4,12 @@ namespace App\Context\Customers\Customer\Domain\Repository;
 
 use App\Context\Customers\Customer\Domain\Customer;
 
+
+/***
+ * Customer Repository Interface
+ */
 interface CustomerRepository
 {
-
 
     public function searchAll(): array;
     public function search($customer_id): ?Customer;

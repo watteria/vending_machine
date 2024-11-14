@@ -15,6 +15,7 @@ use App\SharedKernel\Domain\Aggregate\AggregateRoot;
 #[ODM\Document(collection: "customers")]
 class Customer extends AggregateRoot
 {
+    // ODM DEFINITION
 
     #[ODM\Id(strategy: 'NONE', type: 'string')]
     private string $_id;
@@ -74,6 +75,7 @@ class Customer extends AggregateRoot
     {
         $customer = new self($customer_id, $id_product,$inserted_money,$status,$remaining_machine_coins);
 
+        // Register Domain Event
         $customer->record(new CustomerWasCreated(
             $customer->id(),
             $customer->customer_id(),
@@ -91,6 +93,7 @@ class Customer extends AggregateRoot
 
         $customer = new self($customer_id, $id_product,$inserted_money,$status,$remaining_machine_coins);
 
+        // Register Domain Event
         $customer->record(new CustomerWasUpdated(
             $customer->id(),
             $customer->customer_id(),
@@ -109,6 +112,7 @@ class Customer extends AggregateRoot
 
         $customer = new self($customer_id, $id_product,$inserted_money,$status,$remaining_machine_coins);
 
+        // Register Domain Event
         $customer->record(new CustomerWasCheckout(
             $customer->id(),
             $customer->customer_id(),
@@ -127,6 +131,7 @@ class Customer extends AggregateRoot
 
         $customer = new self($customer_id, $id_product,$inserted_money,$status,$remaining_machine_coins);
 
+        // Register Domain Event
         $customer->record(new CustomerWasReset(
             $customer->id(),
             $customer->customer_id(),

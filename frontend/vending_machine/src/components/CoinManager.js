@@ -2,12 +2,13 @@ import React, {  useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function CoinManager({ coins, setCoins, setMensaje, accesoPermitido, totalMonedas, handleCustomerAction, loading, updateHttpRequestInfo ,totalAcumulado}) {
+function CoinManager({ coins, setCoins, setMensaje, accesoPermitido, totalMonedas, handleCustomerAction, loading,fetchTotalAcumulado, setIsLoadingData,updateHttpRequestInfo ,totalAcumulado,setTotalAcumulado}) {
 
 
     // Obtenir monedes ( si es client cuantitat=0 , si es admin cuantitat=cantidad vending)
     const fetchCoins = async () => {
         try {
+            setIsLoadingData(true);
             const url = 'http://localhost:1000/api/coins';
             const response = await axios.get(url);
             updateHttpRequestInfo('GET', url, null, response.data);
@@ -17,6 +18,7 @@ function CoinManager({ coins, setCoins, setMensaje, accesoPermitido, totalMoneda
                 quantity: 0
             }));
             setCoins(updatedCoins);
+            setIsLoadingData(false);
         } catch (error) {
             console.error('Error fetching coins:', error);
         }
@@ -46,6 +48,7 @@ function CoinManager({ coins, setCoins, setMensaje, accesoPermitido, totalMoneda
 
     // Gestiona si le dan a save
     const handleSave = async (coin) => {
+        setIsLoadingData(true);
         const url = `http://localhost:1000/api/coins/${coin.coin_id}`;
         const coinToSave = {
             ...coin,
@@ -59,6 +62,8 @@ function CoinManager({ coins, setCoins, setMensaje, accesoPermitido, totalMoneda
             console.error('Error saving the coin:', error);
             setMensaje('ERROR: saving the coin');
         }
+        fetchTotalAcumulado();
+        setIsLoadingData(false);
     };
 
     const sortedCoins = [...coins].sort((a, b) => a.coin_value - b.coin_value);

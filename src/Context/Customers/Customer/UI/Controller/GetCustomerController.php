@@ -15,12 +15,19 @@ class GetCustomerController extends AbstractController
 {
     public function __construct(private readonly QueryBus $queryBus){}
 
+    /***
+     * Get Customer info and current machine money
+     * @param Request $request
+     * @return Response
+     */
     public function __invoke(Request $request): Response
     {
 
+        // Get user current info
         $response = $this->queryBus->ask(new GetCustomerQuery($request->get('customer_id')));
         $customer=$response->result();
 
+        // Get machine money
         $machineCoins=$this->queryBus->ask(AllCoinsQuery::create())->result();
         $change=MoneyChangeOnLimitedCoins::calculateChange($machineCoins,0,0);
 

@@ -23,6 +23,13 @@ class CreateItemsController extends AbstractController
     {
     }
 
+    /***
+     * Create an Item
+     *
+     * @param Request $request
+     * @return Response
+     */
+
     public function __invoke(Request $request): Response
     {
 
@@ -30,6 +37,8 @@ class CreateItemsController extends AbstractController
         if($jsonData === null) {
             $jsonData= $request->request->all();
         }
+
+        // Check request data
         $validationErrors = $this->validateRequest($jsonData);
         $messages=array();
 
@@ -43,6 +52,8 @@ class CreateItemsController extends AbstractController
                 'request_data' =>   $jsonData
             ], Response::HTTP_OK);
         }else{
+
+            // Dispatch to command bus
             $item_id=ItemId::random();
             $this->commandBus->dispatch(new CreateItemCommand($item_id, new ItemProductName($jsonData['product_name']),
                 new ItemQuantity($jsonData['quantity']), new ItemPrice($jsonData['price'])));
@@ -51,6 +62,13 @@ class CreateItemsController extends AbstractController
         }
     }
 
+
+    /***
+     * Validate fields
+     *
+     * @param array $fields
+     * @return ConstraintViolationListInterface
+     */
     private function validateRequest(array $fields): ConstraintViolationListInterface
     {
         $constraint = new Assert\Collection(

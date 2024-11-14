@@ -13,6 +13,11 @@ class AvaiableChangeCoinsController extends AbstractController
 {
     public function __construct(private readonly QueryBus $queryBus){}
 
+    /***
+     * Get all coins with valid_for_change=true
+     * @param Request $request
+     * @return Response
+     */
     public function __invoke(Request $request): Response
     {
         $response = $this->queryBus->ask(AllCoinsQuery::create());

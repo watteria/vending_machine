@@ -25,10 +25,23 @@ class CheckoutCustomerController extends AbstractController
     {
     }
 
+
+    /***
+     * Checkout Customer
+     *
+     * @param Request $request
+     * @return Response
+     */
+
     public function __invoke(Request $request): Response
     {
 
-        $customer_id=$request->get('customer_id');
+        // IF THERE'S NO CUSTOMER ID CREATED
+        if(!$request->get('customer_id')){
+            $customer_id=CustomerId::random();
+        }else{
+            $customer_id=$request->get('customer_id');
+        }
 
         $jsonData = json_decode($request->getContent(), true);
         if($jsonData === null) {
@@ -37,24 +50,30 @@ class CheckoutCustomerController extends AbstractController
 
 
 
-
+        // Check if user seleted a product
         if(isset($jsonData['id_product']) && $jsonData['id_product']!=="" ){
             $Item=$this->queryBus->ask(new GetItemQuery($jsonData['id_product']));
 
+            // Check Product exist in Vending Machine
             if(!isset($Item->result()['quantity'])){
                 return new JsonResponse(['message' => "ERROR: This Product is not found"],Response::HTTP_OK);
             }else{
 
+                // Check user has inserted nothing
                 if($jsonData['inserted_money']!="" && $jsonData['inserted_money']){
                     $total=MoneyCounterFromJson::calculateTotal($jsonData['inserted_money']);
 
+                    // Check user has inserted nothing
                     if($total==0){
                         return new JsonResponse(['message' => "ERROR: No coin Inserted"],Response::HTTP_OK);
                     }else{
+
+                        // Check product avaiability
                         if($Item->result()['quantity']==0){
                             return new JsonResponse(['message' => "ERROR: This Product is out of stock"],Response::HTTP_OK);
                         }else{
 
+                            // Check user has inserted enought money
                             if($Item->result()['price']>$total){
                                 return new JsonResponse(['message' => "ERROR: You haven't inserted enought money"],Response::HTTP_OK);
                             }else{
@@ -63,6 +82,7 @@ class CheckoutCustomerController extends AbstractController
 
                                 $change=MoneyChangeOnLimitedCoins::calculateChange($machineCoins,$jsonData['inserted_money'],$Item->result()['price']);
 
+                                // Check machine has enough change
                                 if($change['status']=="insufficient_machine_change"){
                                     return new JsonResponse(['message' => "ERROR: The machine not have enought money for the change"],Response::HTTP_OK);
                                 }

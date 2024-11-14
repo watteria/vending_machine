@@ -13,6 +13,12 @@ final  class DomainEventJsonDeserializer
 {
 	public function __construct(private readonly DomainEventMapping $mapping) {}
 
+    /***
+     * deserialize message from rabbit
+     * @param string $domainEvent
+     * @return DomainEvent
+     * @throws \JsonException
+     */
 	public function deserialize(string $domainEvent): DomainEvent
 	{
 		$eventData = Utils::jsonDecode($domainEvent);

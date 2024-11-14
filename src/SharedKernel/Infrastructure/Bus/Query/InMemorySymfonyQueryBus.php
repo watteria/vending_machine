@@ -28,6 +28,11 @@ final  class InMemorySymfonyQueryBus implements QueryBus
 		);
 	}
 
+    /***
+     * Query Bus using Symfony Message component
+     * @param Query $query
+     * @return Response|null
+     */
 	public function ask(Query $query): ?Response
 	{
 		try {

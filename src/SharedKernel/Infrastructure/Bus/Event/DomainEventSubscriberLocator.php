@@ -22,6 +22,11 @@ final class DomainEventSubscriberLocator
 		$this->mapping = iterator_to_array($mapping);
 	}
 
+    /***
+     * Retrieves all subscribers for a specific event class.
+     * @param string $eventClass
+     * @return array
+     */
 	public function allSubscribedTo(string $eventClass): array
 	{
 		$formatted = CallableFirstParameterExtractor::forPipedCallables($this->mapping);
@@ -29,6 +34,12 @@ final class DomainEventSubscriberLocator
 		return $formatted[$eventClass];
 	}
 
+    /***
+     * Retrieves the subscriber associated with a specific RabbitMQ queue name.
+     *
+     * @param string $queueName
+     * @return callable|DomainEventSubscriber
+     */
 	public function withRabbitMqQueueNamed(string $queueName): callable | DomainEventSubscriber
 	{
 		$subscriber = search(
@@ -44,6 +55,10 @@ final class DomainEventSubscriberLocator
 		return $subscriber;
 	}
 
+    /***
+     * Returns all available event subscribers.
+     * @return array
+     */
 	public function all(): array
 	{
 		return $this->mapping;

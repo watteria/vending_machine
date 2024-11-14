@@ -28,6 +28,12 @@ final class InMemorySymfonyCommandBus implements CommandBus
 		);
 	}
 
+    /***
+     * Dispatch to command bus using Symfony message component
+     * @param Command $command
+     * @return void
+     * @throws \Throwable
+     */
 	public function dispatch(Command $command): void
 	{
 		try {

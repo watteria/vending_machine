@@ -8,6 +8,9 @@ use App\Context\Coins\Coin\Domain\ValueObject\CoinValidForChange;
 use App\Context\Coins\Coin\Domain\ValueObject\CoinValue;
 use App\SharedKernel\Domain\Bus\Command\Command;
 
+/**
+ * Coins Command Bus
+ */
 abstract class CoinsCommand implements Command
 {
 

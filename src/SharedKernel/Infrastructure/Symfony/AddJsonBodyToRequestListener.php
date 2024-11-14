@@ -11,6 +11,12 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 final class AddJsonBodyToRequestListener
 {
+    /***
+     * Processes incoming requests to decode JSON content and modify the request parameters.
+     * @param RequestEvent $event
+     * @return void
+     * @throws \JsonException
+     */
 	public function onKernelRequest(RequestEvent $event): void
 	{
 		$request = $event->getRequest();
@@ -33,6 +39,13 @@ final class AddJsonBodyToRequestListener
 		}
 	}
 
+    /***
+     * Checks if a request contains a specific header with a specific value.
+     * @param Request $request
+     * @param string $name
+     * @param string $value
+     * @return bool
+     */
 	private function containsHeader(Request $request, string $name, string $value): bool
 	{
 		return str_starts_with((string) $request->headers->get($name), $value);

@@ -20,6 +20,11 @@ class OnCustomerCheckout implements DomainEventSubscriber
     {
     }
 
+    /***
+     * This function is executed when the 'Customer Was Checkout' event is triggered, updating the item reducing the item count by 1 in the machine.
+     * @param CustomerWasCheckout $event
+     * @return void
+     */
     public function __invoke(CustomerWasCheckout $event): void
     {
 

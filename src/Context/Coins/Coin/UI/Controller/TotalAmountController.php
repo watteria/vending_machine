@@ -14,6 +14,12 @@ class TotalAmountController extends AbstractController
 {
     public function __construct(private readonly QueryBus $queryBus){}
 
+    /***
+     * Get total euro amount in vending machine
+     *
+     * @param Request $request
+     * @return Response
+     */
     public function __invoke(Request $request): Response
     {
         $response = $this->queryBus->ask(TotalAmountQuery::create());

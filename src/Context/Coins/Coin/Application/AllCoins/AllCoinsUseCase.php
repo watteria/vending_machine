@@ -10,6 +10,10 @@ class AllCoinsUseCase
     {
     }
 
+    /***
+     * Get all coins in the repository
+     * @return array|null
+     */
     public function __invoke(): ? array
     {
         $coins = $this->repository->searchAll();

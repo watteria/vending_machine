@@ -7,6 +7,10 @@ use App\Context\Customers\Customer\Domain\ValueObject\CustomerStatus;
 use App\Context\Items\Item\Domain\ValueObject\ItemId;
 use App\SharedKernel\Domain\Bus\Event\DomainEvent;
 
+
+/***
+ * Customer Domain Event
+ */
 abstract class CustomersDomainEvent extends DomainEvent
 {
 
@@ -23,7 +27,11 @@ abstract class CustomersDomainEvent extends DomainEvent
         parent::__construct($id, $eventId, $occurredOn);
     }
 
-
+    /***
+     * Helps to write domain event body
+     *
+     * @return array
+     */
     public function toPrimitives(): array
     {
         return [

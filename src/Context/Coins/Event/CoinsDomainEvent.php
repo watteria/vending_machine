@@ -8,6 +8,9 @@ use App\Context\Coins\Coin\Domain\ValueObject\CoinValidForChange;
 use App\Context\Coins\Coin\Domain\ValueObject\CoinValue;
 use App\SharedKernel\Domain\Bus\Event\DomainEvent;
 
+/***
+ * Coins DomainEvent
+ */
 abstract class CoinsDomainEvent extends DomainEvent
 {
 
@@ -24,7 +27,11 @@ abstract class CoinsDomainEvent extends DomainEvent
     }
 
 
-
+    /***
+     * Helps to write domain event body
+     *
+     * @return array
+     */
     public function toPrimitives(): array
     {
         return [

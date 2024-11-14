@@ -11,6 +11,12 @@ class GetItemUseCase
     {
     }
 
+    /***
+     * Get Item from item_id
+     *
+     * @param string $item_id
+     * @return Item|null
+     */
     public function __invoke(string $item_id): ? Item
     {
         $item = $this->repository->search($item_id);

@@ -18,6 +18,17 @@ class CheckoutCustomerUseCase
     ) {
     }
 
+    /***
+     * Checkout Customer
+     *
+     * @param CustomerId $customer_id
+     * @param ItemId $id_product
+     * @param CustomerInsertedMoney $inserted_money
+     * @param CustomerStatus $status
+     * @param array $remaining_machine_coins
+     * @return void
+     */
+
     public function __invoke(CustomerId $customer_id, ItemId $id_product,CustomerInsertedMoney $inserted_money,CustomerStatus $status,array $remaining_machine_coins): void
     {
 

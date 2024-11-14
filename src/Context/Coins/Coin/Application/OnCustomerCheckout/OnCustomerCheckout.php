@@ -18,6 +18,11 @@ class OnCustomerCheckout implements DomainEventSubscriber
     {
     }
 
+    /***
+     * This function is executed when the 'Customer Was Checkout' event is triggered, updating the available coins in the machine.
+     * @param CustomerWasCheckout $event
+     * @return void
+     */
     public function __invoke(CustomerWasCheckout $event): void
     {
             $coins=$event->remaining_machine_coins() ;

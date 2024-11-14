@@ -10,6 +10,10 @@ class TotalAmountUseCase
     {
     }
 
+    /***
+     * Get all coins in the repository in order to get the Total amount in the vendingMachine
+     * @return array|null
+     */
     public function __invoke(): ? array
     {
         $coins = $this->repository->searchAll();

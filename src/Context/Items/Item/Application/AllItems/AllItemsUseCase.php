@@ -10,6 +10,10 @@ class AllItemsUseCase
     {
     }
 
+    /***
+     * Get all items in the repository
+     * @return array|null
+     */
     public function __invoke(): ? array
     {
         $items = $this->repository->searchAll();

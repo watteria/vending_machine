@@ -102,6 +102,20 @@ services:
     networks:
       - ddd-skeleton-network
 
+  ddd-skeleton-mongo-express:
+    container_name: ddd-skeleton-mongo-express
+    image: mongo-express:latest
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: rootpassword
+      ME_CONFIG_MONGODB_SERVER: ddd-skeleton-mongodb
+    depends_on:
+      - ddd-skeleton-mongodb
+    networks:
+      - ddd-skeleton-network
+
 volumes:
   ddd-skeleton-mongodb-data:
 

@@ -22,12 +22,20 @@ class UpdateCoinController extends AbstractController
     {
     }
 
+    /***
+     * Update Coin
+     *
+     * @param Request $request
+     * @return Response
+     */
     public function __invoke(Request $request): Response
     {
         $jsonData = json_decode($request->getContent(), true);
         if($jsonData === null) {
             $jsonData= $request->request->all();
         }
+
+        // Check request data
         $validationErrors = $this->validateRequest($jsonData);
         $messages=array();
 
@@ -49,6 +57,7 @@ class UpdateCoinController extends AbstractController
             $coin_value=new CoinValue($jsonData['coin_value']);
             $valid_for_change=new CoinValidForChange($jsonData['valid_for_change']);
 
+            // Dispatch to command bus
             $this->commandBus->dispatch(new UpdateCoinCommand($coin_id,
                 $quantity, $coin_value, $valid_for_change));
 
@@ -56,6 +65,12 @@ class UpdateCoinController extends AbstractController
         }
     }
 
+    /***
+     * Validate fields
+     *
+     * @param array $fields
+     * @return ConstraintViolationListInterface
+     */
     private function validateRequest(array $fields): ConstraintViolationListInterface
     {
         $constraint = new Assert\Collection(

@@ -23,6 +23,11 @@ class UpdateCustomerController extends AbstractController
     {
     }
 
+    /***
+     * Update Customer when insert coins and select a product
+     * @param Request $request
+     * @return Response
+     */
     public function __invoke(Request $request): Response
     {
 

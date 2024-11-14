@@ -14,6 +14,7 @@ use App\SharedKernel\Domain\Aggregate\AggregateRoot;
 #[ODM\Document(collection: "items")]
 class Item extends AggregateRoot
 {
+    // ODM DEFINITION
     #[ODM\Id(strategy: 'NONE', type: 'string')]
     private string $_id;
 
@@ -65,6 +66,7 @@ class Item extends AggregateRoot
     {
         $item = new self($id, $product_name,$quantity,$price);
 
+        // Register Domain Event
         $item->record(new ItemWasCreated(
             $item->id(),
             $item->item_id(),
@@ -80,6 +82,7 @@ class Item extends AggregateRoot
     {
         $item = new self($id, $product_name,$quantity,$price);
 
+        // Register Domain Event
         $item->record(new ItemWasUpdated(
             $item->id(),
             $item->item_id(),
@@ -95,6 +98,7 @@ class Item extends AggregateRoot
     {
         $item = new self($id, $product_name,$quantity,$price);
 
+        // Register Domain Event
         $item->record(new ItemWasDeleted(
             $item->id(),
             $item->item_id(),

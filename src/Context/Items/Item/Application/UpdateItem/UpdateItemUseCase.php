@@ -18,6 +18,15 @@ class UpdateItemUseCase
     ) {
     }
 
+    /***
+     * Update Item values
+     *
+     * @param ItemId $item_id
+     * @param ItemProductName $product_name
+     * @param ItemQuantity $quantity
+     * @param ItemPrice $price
+     * @return void
+     */
     public function __invoke(ItemId $item_id, ItemProductName $product_name,ItemQuantity $quantity,ItemPrice $price): void
     {
         $item = Item::update($item_id, $product_name,$quantity,$price);

@@ -128,8 +128,9 @@ install: ## Init tot de cop
 	$(MAKE) build
 	$(MAKE) up
 	$(MAKE) composer-install
-	$(MAKE) fix-permissions
 	$(MAKE) symfony-warmup
+	$(MAKE) wait-for-mongo
+	$(MAKE) fix-permissions
 
 
 open-browser:
@@ -151,6 +152,7 @@ wait-for-mongo:
 
 init: ## Init tot de cop
 	$(MAKE) down
+	$(MAKE) build
 	$(MAKE) up
 	$(MAKE) wait-for-mongo
 	$(MAKE) recreate-db

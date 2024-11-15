@@ -143,8 +143,8 @@ endif
 
 wait-for-mongo:
 	@echo "Esperando a que MongoDB esté listo..."
-	@until docker exec ddd-skeleton-mongodb mongosh --host localhost --port 27017 -u root -p rootpassword --authenticationDatabase admin --eval "db.stats()" > /dev/null 2>&1; do \
-		echo "MongoDB no está listo, esperando..."; \
+	@until docker exec ddd-skeleton-mongodb mongosh --host localhost --port 27017 -u root -p rootpassword --authenticationDatabase admin --eval "db.stats()"; do \
+		echo "MongoDB no esta listo, esperando..."; \
 		sleep 5; \
 	done
 	@echo "MongoDB está listo."

@@ -9,7 +9,6 @@
 /vendor/
 /docker/mongodb/mongodata/*
 !/docker/mongodb/mongodata/.gitignore
-/docker/mongodb/mongodata
 .idea
 behat_windows_oriol.yaml
 ###< symfony/framework-bundle ###
